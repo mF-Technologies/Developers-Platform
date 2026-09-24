@@ -7,6 +7,8 @@ info:
 paths:
   /api/instrument/{instrument}/tick:
     put:
+      tags:
+        - Chart Maintenance
       summary: Modify tick
       description: Modify tick
       operationId: putInstrumentTick
@@ -54,6 +56,8 @@ paths:
         - ftsweb: []
   /api/instrument/{instrument}/live-statistics:
     get:
+      tags:
+        - Chart Data
       summary: Get instrument live statistics
       description: Get instrument live statistics
       operationId: getInstrumentLiveStatistics
@@ -77,6 +81,8 @@ paths:
           description: Invalid instrument name / Unsupported time series type
   /api/instrumentnames:
     get:
+      tags:
+        - Chart Data
       summary: Get Instrument Names
       description: Get map of Platform contract id to chart instrument code mapping
       operationId: getInstrumentNames
@@ -92,6 +98,8 @@ paths:
                   description: Chart instrument code
   /api/instrument/{instrument}/open-price:
     get:
+      tags:
+        - Chart Data
       summary: Get instrument open price
       description: Get instrument open price
       operationId: getInstrumentOpenPrice
@@ -111,6 +119,8 @@ paths:
           description: Instrument open price not found
   /api/instrument/{instrument}/getChartBarsByEndTimeAndBarNumber/{periodType}/{barNumber}:
     get:
+      tags:
+        - Chart Data
       summary: Get chart bars by end time and bar number
       description: Get chart bars by end time and bar number
       operationId: getChartBarsByEndTimeAndBarNumber
@@ -127,6 +137,8 @@ paths:
           description: Invalid instrument name / Invalid period type
   /api/instrument/{instrument}/getLastBar/{periodType}:
     get:
+      tags:
+        - Chart Data
       summary: Get the last chart bar from cache
       description: Get the last chart bar from cach
       operationId: getLastBar

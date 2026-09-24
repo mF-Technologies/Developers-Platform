@@ -1,0 +1,16 @@
+plugins:
+  - ./redocly-plugins/tag-whitelist.cjs
+
+decorators:
+  tag-whitelist/only:
+    tags:
+      - Authentication
+      - Configuration
+      - Account
+      - Trading
+      - Orders
+      - Positions
+      - Trade History
+      - Account Updates
+      - Chart Data
+  remove-unused-components: on

@@ -16,6 +16,8 @@ externalDocs:
 paths:
   /addOrder:
     post:
+      tags:
+        - Trading
       summary: Add a new order
       security:
         - bearerAuth: [ ]
@@ -90,6 +92,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /editOrder:
     post:
+      tags:
+        - Trading
       summary: Edit an existing order
       security:
         - bearerAuth: []
@@ -173,6 +177,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /cancelOrder:
     post:
+      tags:
+        - Trading
       summary: Cancel an order
       security:
         - bearerAuth: []
@@ -220,6 +226,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /addDeal:
     post:
+      tags:
+        - Trading
       summary: Add a deal
       security:
         - bearerAuth: []
@@ -310,6 +318,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /editDealOcoPair:
     post:
+      tags:
+        - Trading
       summary: Edit OCO pair for a deal
       security:
         - bearerAuth: []
@@ -388,6 +398,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /liquidate:
     post:
+      tags:
+        - Trading
       summary: Liquidate a position
       security:
         - bearerAuth: []
@@ -486,6 +498,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /accountBalance:
     get:
+      tags:
+        - Account
       summary: Get account balance
       security:
         - bearerAuth: []
@@ -518,6 +532,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /positionDetail:
     get:
+      tags:
+        - Positions
       summary: Get position detail
       security:
         - bearerAuth: []
@@ -563,6 +579,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /updateEventStream:
     get:
+      tags:
+        - Account Updates
       summary: get Position / Order update Event Stream (SSE)
       description: get Position / Order update Event Stream (SSE)
       security:
@@ -586,6 +604,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
   /chartCode:
     get:
+      tags:
+        - Chart Data
       summary: Get chart instrument code-to-name mapping
       description: >
         Returns a mapping of contract code to chart code. No authentication required. 

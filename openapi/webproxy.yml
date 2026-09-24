@@ -1000,92 +1000,6 @@ components:
           type: boolean
           description: Whether buy is a new order
 paths:
-  /deposit:
-    post:
-      summary: Deposit
-      description: Upload deposit record into system with receipt as image
-      operationId: deposit
-      responses:
-        "200":
-          description: successfully processed
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  confirmed:
-                    type: boolean
-                  reference:
-                    type: string
-                required:
-                  - confirmed
-                  - reference
-        "400":
-          description: Invalid input
-        "415":
-          description: attached image is not in PNG / JPEG format
-        "413":
-          description: attached image is too large
-        "409":
-          description: |
-            deposit is rejected due to business logic
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: string
-                    description: >
-                      Dictionary:
-                        * -1: Withdrawal Request Failure (Reason: Amount)!
-                        * -2: Withdrawal Request Failure (Reason: Account Type)!
-                        * -3: Invalid Password!
-                        * -4: Not used
-                        * -5: Pay-in limit per transfer is @@1 - @@2; please try again.
-                        * -6: Withdrawal limit per transfer is @@1 - @@2; please try again.
-                        * -7: Exceed deposit transaction limit
-                        * -8: Exceed withdrawal transaction limit
-                        * -9: Exceed accumulate deposit limit
-                        * -10: Exceed accumulate withdrawal limit
-                        * -11: Out Of Withdrawal Service Time
-                        * -12: Non-Trading Hour
-                    enum:
-                      - "-1"
-                      - "-2"
-                      - "-3"
-                      - "-4"
-                      - "-5"
-                      - "-6"
-                      - "-7"
-                      - "-8"
-                      - "-9"
-                      - "-10"
-                      - "-11"
-                      - "-12"
-                      - ""
-                    required:
-                      - code
-      security:
-        - trader: []
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                bankAccount:
-                  type: string
-                amount:
-                  type: string
-                receiptImage:
-                  type: string
-                  format: binary
-              required:
-                - acc
-                - bankAccount
-                - amount
-                - receiptImage
   /api/countries:
     get:
       tags:
@@ -1180,6 +1094,8 @@ paths:
         - guest: []
   /api/challenge:
     get:
+      tags:
+        - Demo Account
       summary: Get Captcha Challenge
       description: Get Captch image and type
       operationId: getChallenge
@@ -1417,6 +1333,7 @@ paths:
     post:
       tags:
         - Trader
+        - Account Recovery
       summary: Forgot Live Account Password
       description: Post request that allow guest to send forgot live account password message
       operationId: forgotPasswordLive
@@ -1462,6 +1379,7 @@ paths:
         - trader: []
       tags:
         - Trader
+        - Account
       responses:
         "200":
           description: successfully processed
@@ -1514,6 +1432,7 @@ paths:
         - trader: []
       tags: 
         - Trader
+        - Configuration
       responses:
         '200':
           description: successfully processed
@@ -1535,6 +1454,7 @@ paths:
         - trader: []
       tags:
         - Trader
+        - Orders
       parameters:
         - $ref: "#/components/parameters/beginDate"
         - $ref: "#/components/parameters/endDate"
@@ -1635,6 +1555,7 @@ paths:
         - trader: []
       tags:
         - Trader
+        - Trade History
       parameters:
         - $ref: "#/components/parameters/beginDate"
         - $ref: "#/components/parameters/endDate"
@@ -1752,6 +1673,7 @@ paths:
         - trader: []
       tags:
         - Trader
+        - Positions
       parameters:
         - $ref: "#/components/parameters/endDate"
         - $ref: "#/components/parameters/currency"
@@ -1843,6 +1765,7 @@ paths:
         - trader: []
       tags:
         - Trader
+        - Account
       parameters:
         - $ref: "#/components/parameters/beginDate"
         - $ref: "#/components/parameters/endDate"
@@ -1908,6 +1831,7 @@ paths:
         - trader: [ ]
       tags:
         - Trader
+        - Trade History
       responses:
         '200':
           description: successfully processed
@@ -1926,6 +1850,7 @@ paths:
         - trader: []
       tags:
         - Trader
+        - Trade History
       parameters:
         - $ref: "#/components/parameters/beginDate"
         - $ref: "#/components/parameters/endDate"
@@ -2027,7 +1952,7 @@ paths:
       summary: Get mF4 Download page
       operationId: downloadmF4Page
       tags:
-        - WebUI
+        - Web UI
       security:
         - guest: []
       parameters:
@@ -2042,347 +1967,6 @@ paths:
                 description: Webpage to download mF4 application
         "404":
           description: Page not found
-  /api/news/:
-    summary: List news
-    get:
-      summary: Get news list
-      tags:
-        - News
-      description: "List news heading and brief description"
-      operationId: "getNewsList"
-      security:
-        - trader: []
-      parameters:
-        - name: lang
-          in: query
-          description: language of news to retrieve
-          required: false
-          schema:
-            type: string
-            description: >
-              language of news to retrieve
-              Dictionary:
-                * -zh-tw: Traditional Chinese
-                * -zh-cn: Simplified Chinese
-                * -en: English
-            enum:
-              - 'zh-tw'
-              - 'zh-cn'
-              - 'en'
-            default: 'en'
-        - name: reportGroup
-          in: query
-          description: Name of the reportGroup
-          required: false
-          schema:
-            type: string
-        - name: start
-          in: query
-          description: Starting index of the results, if not provided return latest 50 result
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-        - name: size
-          in: query
-          description: Number of results to return, if not provided return latest 50 result
-          required: false
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 50
-      responses:
-        200:
-          description: A list of news header and briefings
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    newsId:
-                      type: string
-                      description: unique news id
-                      example: 1
-                    header:
-                      type: string
-                      description: news header
-                      example: "再往上衝！看漲金價的三大理由"
-                    date:
-                      type: string
-                      description: news publish or latest update date, in iso date format
-                      example: "2023-08-24T08:23:32Z"
-                    content:
-                      type: string
-                      description: news content, in html format fetching full length of news
-                      example: "據美國財政部宣布發行 1,030 億美元公債，推動長期公債收益率觸及九個月高點，但上週五在可能影響美國利率路徑的關鍵就業報告公布前，壓抑美元走勢，並據路透調查，受惠於出口強勁，日本 4-6 月國內生產總值 (GDP) ..."
-        400:
-          description: invalid query parameters input
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errCode:
-                    enum:
-                      - "103"
-                      - "104"
-                      - "105"
-                    description: >
-                      3-digit news related error code
-                      Dictionary:
-                        * -103: Invalid language input
-                        * -104: Invalid start input
-                        * -105: Invalid size input
-                    example: "103"
-        401:
-          description: Unauthorized
-        404:
-          description: report group not exist
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errCode:
-                    type: string
-                    description: >
-                      3-digit news related error code
-                      Dictionary:
-                        * -101: reportGroup does not exist
-                    enum:
-                      - "101"
-                    example: "101"
-        '429':
-          $ref: '#/components/responses/RateLimitedResponse'
-        default:
-          description: Default error sample response
-  /api/news/{newsId}:
-    get:
-      tags:
-        - News
-      summary: "Get one news"
-      description: "Get one news"
-      operationId: "getSingleNews"
-      security:
-        - trader: []
-      parameters:
-        - name: newsId
-          in: path
-          description: ID of the company to retrieve
-          required: true
-          schema:
-            type: integer
-            minimum: 1
-        - name: lang
-          in: query
-          description: language of news to retrieve
-          required: false
-          schema:
-            type: string
-            description: >
-              language of news to retrieve
-              Dictionary:
-                * -zh-tw: Traditional Chinese
-                * -zh-cn: Simplified Chinese
-                * -en: English
-            enum:
-              - 'zh-tw'
-              - 'zh-cn'
-              - 'en'
-            default: 'en'
-      responses:
-        200:
-          description: A list of news header and briefings
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  newsId:
-                    type: string
-                    description: unique news id
-                    example: 1
-                  header:
-                    type: string
-                    description: news header
-                    example: "再往上衝！看漲金價的三大理由"
-                  date:
-                    type: string
-                    description: news publish or latest update date, in iso date format
-                    example: "2023-08-24T08:23:32Z"
-                  content:
-                    type: string
-                    description: news content, in html format fetching full length of news
-                    example: "據美國財政部宣布發行 1,030 億美元公債，推動長期公債收益率觸及九個月高點，但上週五在可能影響美國利率路徑的關鍵就業報告公布前，壓抑美元走勢，並據路透調查，受惠於出口強勁，日本 4-6 月國內生產總值 (GDP) ..."
-        400:
-          description: invalid lang input
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errCode:
-                    enum:
-                      - "103"
-                    description: >
-                      3-digit news related error code
-                      Dictionary:
-                        * -103: Invalid language input
-                    example: "103"
-        401:
-          description: Unauthorized
-        404:
-          description: newsId does not exist
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errCode:
-                    enum:
-                      - "102"
-                    description: >
-                      3-digit news related error code
-                      Dictionary:
-                        * -102: newsId does not exist
-                    example: "102"
-        '429':
-          $ref: '#/components/responses/RateLimitedResponse'
-  /{lang}/news-list/:
-    get:
-      tags:
-        - News
-      summary: "News list webview"
-      description: "News list webview"
-      operationId: "getNewsListWebview"
-      parameters:
-        - name: lang
-          in: path
-          description: language of news to retrieve
-          required: true
-          schema:
-            type: string
-            description: >
-              language of news to retrieve
-              Dictionary:
-                * -zh-tw: Traditional Chinese
-                * -zh-cn: Simplified Chinese
-                * -en: English
-            enum:
-              - 'zh-tw'
-              - 'zh-cn'
-              - 'en'
-        - name: theme
-          in: query
-          description: Theme of the UI
-          required: false
-          schema:
-            type: string
-            description: >
-              Theme of the news UI
-              Dictionary:
-                * -light: Light theme for trader pro
-                * -dark: Dark theme for webtrader
-            enum:
-              - 'light'
-              - 'dark'
-            default: 'light'
-        - name: reportGroup
-          in: query
-          description: report group of news to retrieve
-          required: true
-          schema:
-            type: string
-            enum:
-              - PRODUCTION
-              - DEMOPLATFM
-        - name: token
-          in: query
-          description: JWT token that used to authenticate the user in webproxy
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: A list of news content
-          content:
-            html:
-              schema:
-                type: string
-                example: "<html><body><h1>News list</h1></body></html>"
-        400:
-          description: invalid lang or theme input
-        401:
-          description: Unauthorized
-        404:
-          description: News not found
-  /{lang}/news/:
-    get:
-      tags:
-        - News
-      summary: "News content webview"
-      description: "News content webview"
-      operationId: "getNewsContentWebview"
-      parameters:
-        - name: lang
-          in: path
-          description: language of news to retrieve
-          required: true
-          schema:
-            type: string
-            description: >
-              language of news to retrieve
-              Dictionary:
-                * -zh-tw: Traditional Chinese
-                * -zh-cn: Simplified Chinese
-                * -en: English
-            enum:
-              - 'zh-tw'
-              - 'zh-cn'
-              - 'en'
-        - name: theme
-          in: query
-          description: Theme of the UI
-          required: false
-          schema:
-            type: string
-            description: >
-              Theme of the news UI
-              Dictionary:
-                * -light: Light theme for trader pro
-                * -dark: Dark theme for webtrader
-            enum:
-              - 'light'
-              - 'dark'
-            default: 'light'
-        - name: id
-          in: query
-          description: unique id of the news
-          required: true
-          schema:
-            type: string
-        - name: token
-          in: query
-          description: JWT token that used to authenticate the user in webproxy
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: single news content
-          content:
-            html:
-              schema:
-                type: string
-                example: "<html><body><h1>News list</h1></body></html>"
-        400:
-          description: invalid lang or theme input
-        401:
-          description: Unauthorized
-        404:
-          description: News not found
   /api/reportGroup/{reportGroup}/buySellRatio/{contract}:
     get:
       summary: "Buy Sell Ratio"
@@ -2474,6 +2058,8 @@ paths:
           description: report group not found
   /api/companySetting:
     get: 
+      tags:
+        - Company Settings
       summary: Company Setting (Company Name)
       description: Company setting (So far company name only)
       operationId: getCompanySetting
@@ -2489,6 +2075,8 @@ paths:
                   type: string
   /api/contractSetting/{contractCode}/tradingHour:
     get:
+      tags:
+        - Configuration
       summary: Contract setting trading hour
       description: Contract setting trading hour
       operationId: getContractSettingTradingHour
@@ -2561,6 +2149,7 @@ paths:
       operationId: postSession
       tags:
         - Trader
+        - Session
       requestBody:
         content:
           application/json:
@@ -2618,6 +2207,7 @@ paths:
       operationId: patchSession
       tags:
         - Trader
+        - Session
       parameters:
         - name: sessionId
           in: path
@@ -2670,7 +2260,7 @@ paths:
       description: Get a list of all token metadata
       operationId: getAllTokens
       tags:
-        - Tokens
+        - Token Management
       responses:
         200:
           description: A list of token metadata
@@ -2693,7 +2283,7 @@ paths:
       description: Generate a new api key
       operationId: generateToken
       tags:
-        - Tokens
+        - Token Management
       requestBody:
         required: true
         content:
@@ -2744,7 +2334,7 @@ paths:
       description: Edit an existing token and regenerate it
       operationId: editToken
       tags:
-        - Tokens
+        - Token Management
       parameters:
         - name: tokenId
           in: path
@@ -2779,7 +2369,7 @@ paths:
       description: Activates or deactivates a token
       operationId: changeTokenStatus
       tags:
-        - Tokens
+        - Token Management
       parameters:
         - name: tokenId
           in: path
@@ -2825,7 +2415,7 @@ paths:
       description: List of key checking config
       operationId: getTokenConfig
       tags:
-        - Tokens
+        - Token Management
       responses:
         200:
           description: Key config list
@@ -2851,7 +2441,7 @@ paths:
       description: Delete token
       operationId: deleteToken
       tags:
-        - Tokens
+        - Token Management
       parameters:
         - name: tokenId
           in: path
@@ -2886,7 +2476,7 @@ paths:
       description: Exchange API key for access token
       operationId: exchangeToken
       tags:
-        - Tokens
+        - Authentication
       security:
         - ApiKeyAuth: []
       responses:
@@ -2913,7 +2503,7 @@ paths:
       description: Get Trade Config
       operationId: getTradeConfig
       tags:
-        - Tokens
+        - Configuration
       security:
         - trader: []
       responses:
@@ -2932,6 +2522,10 @@ paths:
                     type: string
                   reportGroupId:
                     type: integer
+                  fxServerApiEndpoint:
+                    type: string
+                  chartServerApiEndpoint:
+                    type: string
         401:
           description: Unauthorized
         '429':
@@ -2943,6 +2537,7 @@ paths:
       operationId: traderGetContractSetting
       tags:
         - Trader
+        - Configuration
       security:
         - trader: []
       parameters:
@@ -2976,6 +2571,7 @@ paths:
       operationId: traderGetPositionToday
       tags:
         - Trader
+        - Positions
       security:
         - trader: []
       responses:
@@ -2998,6 +2594,7 @@ paths:
       operationId: traderGetOrderToday
       tags:
         - Trader
+        - Orders
       security:
         - trader: []
       responses:
@@ -3020,6 +2617,7 @@ paths:
       operationId: traderGetOrderDetail
       tags:
         - Trader
+        - Orders
       security:
         - trader: []
       parameters:
@@ -3061,6 +2659,7 @@ paths:
       operationId: traderGetLiquidationToday
       tags:
         - Trader
+        - Trade History
       security:
         - trader: []
       responses:
@@ -3083,6 +2682,7 @@ paths:
       operationId: traderGetLiquidationDetail
       tags:
         - Trader
+        - Trade History
       security:
         - trader: []
       parameters:
