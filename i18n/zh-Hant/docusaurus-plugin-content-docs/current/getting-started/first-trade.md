@@ -127,4 +127,4 @@ curl --request POST "$WEB_PROXY_URL/api/tokens/new" \
 - 閱讀 [REST API 基礎](../fx-server/general-rest-api-information)，了解回應處理、重試及報價模式。
 - 查看 [FxServer Trader API](../fx-server/openapi-trader) 的請求及事件 schema。
 - 查看 [WebProxy API](../web-proxy/openapi) 的帳戶資料、合約設定、API keys 及 token 交換流程。
-- 開啟 [Trader API 範例](https://github.com/mF-Technologies/trader-api-examples)，參考可執行的 REST、市場數據及 algo 流程。
+- 開啟 [Trader API Client Starter Kit](https://github.com/mF-Technologies/trader-api-client-starter-kit)，參考可執行的 REST、市場數據及 algo 流程。

@@ -23,9 +23,9 @@
     "message": "REST 基礎",
     "description": "The label of footer link with label=REST essentials linking to /docs/fx-server/general-rest-api-information"
   },
-  "link.item.label.Trader API Examples": {
-    "message": "Trader API 範例",
-    "description": "The label of footer link with label=Trader API Examples linking to the public GitHub repository"
+  "link.item.label.Trader API Client Starter Kit": {
+    "message": "Trader API Client Starter Kit",
+    "description": "The label of footer link with label=Trader API Client Starter Kit linking to the public GitHub repository"
   },
   "link.item.label.FxServer Trader": {
     "message": "FxServer Trader",

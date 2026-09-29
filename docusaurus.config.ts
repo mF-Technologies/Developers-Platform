@@ -141,7 +141,7 @@ const config: Config = {
             {label: 'Platform overview', to: '/docs/intro'},
             {label: 'Make your first trade', to: '/docs/getting-started/first-trade'},
             {label: 'REST essentials', to: '/docs/fx-server/general-rest-api-information'},
-            {label: 'Trader API Examples', href: 'https://github.com/mF-Technologies/trader-api-examples', target: '_blank'},
+            {label: 'Trader API Client Starter Kit', href: 'https://github.com/mF-Technologies/trader-api-client-starter-kit', target: '_blank'},
           ],
         },
         {
