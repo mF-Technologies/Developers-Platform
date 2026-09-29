@@ -166,6 +166,24 @@
   color: #ffcc33;
 }
 
+.examplesAction {
+  align-items: center;
+  color: #ffcc33;
+  display: inline-flex;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 4px 0;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.examplesAction:hover {
+  color: #ffffff;
+}
+
 .heroVisual {
   align-items: center;
   border-left: 1px solid #53616b;
