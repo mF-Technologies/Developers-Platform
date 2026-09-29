@@ -127,3 +127,4 @@ The response body contains the API key as plain text. Store it securely, assign 
 - See [REST API essentials](../fx-server/general-rest-api-information.md) for response handling, retries, and quoted pricing.
 - See the [FxServer Trader API](../fx-server/openapi-trader.mdx) for request and event schemas.
 - See the [WebProxy API](../web-proxy/openapi.mdx) for account data, contract settings, API keys, and token exchange.
+- Open [Trader API Client Starter Kit](https://github.com/mF-Technologies/trader-api-client-starter-kit) for runnable REST, market-data, and algo workflows.

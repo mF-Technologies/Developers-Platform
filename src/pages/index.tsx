@@ -24,6 +24,7 @@ type HomeCopy = {
     body: string;
     primaryAction: string;
     secondaryAction: string;
+    examplesAction: string;
     request: string;
     requestLabel: string;
     environment: string;
@@ -77,6 +78,7 @@ const homeCopy: Record<SupportedLocale, HomeCopy> = {
       body: 'The complete onboarding path for developers building secure, observable trading experiences on FxServer, WebProxy, and Realtime Chart Server.',
       primaryAction: 'Make your first trade',
       secondaryAction: 'Explore the API',
+      examplesAction: 'Open Trader API Client Starter Kit',
       request: 'REQUEST',
       requestLabel: 'Example Trader API request',
       environment: 'TEST ENV',
@@ -134,7 +136,7 @@ const homeCopy: Record<SupportedLocale, HomeCopy> = {
     hero: {
       firstLine: '由接入，', secondLine: '到執行。',
       body: '從身份驗證到交易執行，一次掌握 FxServer、WebProxy 及 Realtime Chart Server 的完整整合流程。',
-      primaryAction: '完成第一筆交易', secondaryAction: '查看 API', request: '請求',
+      primaryAction: '完成第一筆交易', secondaryAction: '查看 API', examplesAction: '開啟 Trader API Client Starter Kit', request: '請求',
       requestLabel: 'Trader API 請求範例',
       environment: '測試環境', accepted: '交易已接受', orbit: '驗證 / 設定 / 交易 / 串流',
       signals: ['JWT 存取', '市價 + 報價模式', '重複請求保護', '即時執行事件'],
@@ -170,7 +172,7 @@ const homeCopy: Record<SupportedLocale, HomeCopy> = {
     hero: {
       firstLine: '由接入，', secondLine: '到执行。',
       body: '从身份验证到交易执行，一次掌握 FxServer、WebProxy 及 Realtime Chart Server 的完整集成流程。',
-      primaryAction: '完成第一笔交易', secondaryAction: '查看 API', request: '请求',
+      primaryAction: '完成第一笔交易', secondaryAction: '查看 API', examplesAction: '打开 Trader API Client Starter Kit', request: '请求',
       requestLabel: 'Trader API 请求示例',
       environment: '测试环境', accepted: '交易已接受', orbit: '验证 / 设置 / 交易 / 数据流',
       signals: ['JWT 访问', '市价 + 报价模式', '重复请求保护', '实时执行事件'],
@@ -240,6 +242,14 @@ function HomepageHeader({copy}: {copy: HomeCopy}): ReactNode {
             <Link className={styles.primaryAction} to="/docs/getting-started/first-trade">{copy.hero.primaryAction} <Arrow /></Link>
             <Link className={styles.secondaryAction} to="/docs/fx-server/openapi-trader">{copy.hero.secondaryAction}</Link>
           </div>
+          <a
+            className={styles.examplesAction}
+            href="https://github.com/mF-Technologies/trader-api-client-starter-kit"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {copy.hero.examplesAction} <Arrow />
+          </a>
         </div>
         <div className={styles.heroVisual}>
           <div className={styles.visualIndex}>01-06</div><RequestPanel copy={copy.hero} />
