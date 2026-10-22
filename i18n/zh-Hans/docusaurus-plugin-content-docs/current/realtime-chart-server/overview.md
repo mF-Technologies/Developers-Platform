@@ -1,7 +1,6 @@
 ---
 title: Realtime Chart Server
 description: 使用 chart code 及周期类型读取 K 线、实时统计及开盘价。
-pagination_next: realtime-chart-server/openapi
 ---
 
 Realtime Chart Server 为受支持的交易产品提供 K 线、开盘价及实时统计。使用 FxServer 返回的 chart code 调用它的 REST API。

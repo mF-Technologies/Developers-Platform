@@ -1,7 +1,6 @@
 ---
 title: Realtime Chart Server
 description: Retrieve chart bars, live statistics, and open prices using chart codes and period types.
-pagination_next: realtime-chart-server/openapi
 ---
 
 Realtime Chart Server provides chart bars, open prices, and live statistics for supported instruments. Use its REST API with the chart code returned by FxServer.

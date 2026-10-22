@@ -1,6 +1,7 @@
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import {themes as prismThemes} from 'prism-react-renderer';
+import {apiServices, openApiConfig} from './api-services';
 
 const siteUrl = new URL(
   process.env.CI_PAGES_URL ??
@@ -40,6 +41,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
+          docItemComponent: '@theme/ApiItem',
         },
         blog: false,
         theme: {
@@ -47,43 +49,52 @@ const config: Config = {
         },
       } satisfies Preset.Options,
     ],
-    [
-      'redocusaurus',
-      {
-        specs: [
-          {
-            id: 'fxserver-trader-openapi',
-            spec: 'openapi/fxserver-trader.yaml',
-            route: '/reference/fxserver-trader',
-          },
-          {
-            id: 'webproxy-openapi',
-            spec: 'openapi/webproxy.yml',
-            route: '/reference/webproxy',
-          },
-          {
-            id: 'realtime-chart-server-openapi',
-            spec: 'openapi/realtime-chart-server.yml',
-            route: '/reference/realtime-chart-server',
-          },
-        ],
-        theme: {
-          primaryColor: '#ed1c24',
-        },
-      },
-    ],
   ],
 
-  themes: ['@docusaurus/theme-mermaid'],
+  themes: [
+    'docusaurus-theme-openapi-docs',
+    '@docusaurus/theme-mermaid',
+    ['@easyops-cn/docusaurus-search-local', {
+      hashed: true,
+      language: ['en', 'zh'],
+      indexBlog: false,
+      highlightSearchTermsOnTargetPage: true,
+      searchBarShortcutHint: false,
+    }],
+  ],
+
+  plugins: [
+    ['docusaurus-plugin-openapi-docs', {id: 'api', docsPluginId: 'classic', config: openApiConfig}],
+    function legacyApiRoutes(context) {
+      return {
+        name: 'legacy-api-routes',
+        async contentLoaded({actions}) {
+          for (const service of apiServices) {
+            actions.addRoute({
+              path: `${context.baseUrl}reference/${service.legacy}`,
+              component: '@site/src/components/LegacyApiRoute.tsx',
+              exact: true,
+            });
+          }
+        },
+      };
+    },
+  ],
 
   markdown: {
     mermaid: true,
   },
 
   themeConfig: {
+    api: {authPersistence: false, requestCredentials: 'omit'},
+    languageTabs: [
+      {language: 'curl', variant: 'curl', variants: ['curl'], logoClass: 'curl'},
+      {language: 'python', variant: 'requests', variants: ['requests'], logoClass: 'python'},
+      {language: 'javascript', variant: 'fetch', variants: ['fetch'], logoClass: 'javascript'},
+    ],
     colorMode: {
       defaultMode: 'light',
-      respectPrefersColorScheme: false,
+      respectPrefersColorScheme: true,
     },
     metadata: [
       {
@@ -100,28 +111,38 @@ const config: Config = {
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'mainSidebar',
+          to: '/docs/guides',
           position: 'left',
           label: 'Guides',
+          activeBaseRegex: '/docs/(guides|realtime-chart-server/overview|fx-server/(general-rest-api-information|price-steaming))/?$',
         },
         {
-          to: '/docs/fx-server/openapi-trader',
-          label: 'Trader API',
+          type: 'dropdown',
+          label: 'API reference',
+          position: 'left',
+          activeBaseRegex: '/docs/(api/.*|api-reference|fx-server/openapi-trader|web-proxy/openapi|realtime-chart-server/openapi)/?$',
+          items: [
+            {label: 'API reference overview', to: '/docs/api-reference'},
+            ...apiServices.map(service => ({
+              label: service.label,
+              to: `/docs/${service.overview}`,
+              activeBaseRegex: `/docs/(api/${service.id}/.*|${service.overview})/?$`,
+            })),
+          ],
+        },
+        {
+          to: '/docs/getting-started/connect-your-ai',
+          label: 'MCP',
           position: 'left',
         },
         {
-          to: '/docs/web-proxy/openapi',
-          label: 'WebProxy API',
+          href: 'https://github.com/mF-Technologies/trader-api-client-starter-kit',
+          label: 'Examples',
           position: 'left',
+          target: '_blank',
         },
         {
-          to: '/docs/realtime-chart-server/openapi',
-          label: 'Chart API',
-          position: 'left',
-        },
-        {
-          to: '/docs/getting-started/first-trade',
+          to: '/docs/intro',
           label: 'Start building',
           position: 'right',
           className: 'navbar__start-link',
@@ -133,23 +154,38 @@ const config: Config = {
       ],
     },
     footer: {
-      style: 'dark',
+      style: 'light',
       links: [
         {
-          title: 'Onboarding',
+          title: 'Get started',
           items: [
             {label: 'Platform overview', to: '/docs/intro'},
             {label: 'Make your first trade', to: '/docs/getting-started/first-trade'},
+            {label: 'Get live prices', to: '/docs/getting-started/get-prices'},
+          ],
+        },
+        {
+          title: 'Guides',
+          items: [
             {label: 'REST essentials', to: '/docs/fx-server/general-rest-api-information'},
-            {label: 'Trader API Client Starter Kit', href: 'https://github.com/mF-Technologies/trader-api-client-starter-kit', target: '_blank'},
+            {label: 'Realtime Chart Server', to: '/docs/realtime-chart-server/overview'},
+            {label: 'Price streaming', to: '/docs/fx-server/price-steaming'},
           ],
         },
         {
           title: 'API reference',
           items: [
+            {label: 'API reference overview', to: '/docs/api-reference'},
             {label: 'FxServer Trader', to: '/docs/fx-server/openapi-trader'},
             {label: 'WebProxy', to: '/docs/web-proxy/openapi'},
             {label: 'Realtime Chart Server', to: '/docs/realtime-chart-server/openapi'},
+          ],
+        },
+        {
+          title: 'MCP & examples',
+          items: [
+            {label: 'Connect your AI tool', to: '/docs/getting-started/connect-your-ai'},
+            {label: 'Trader API Client Starter Kit', href: 'https://github.com/mF-Technologies/trader-api-client-starter-kit', target: '_blank'},
           ],
         },
         {
@@ -158,7 +194,6 @@ const config: Config = {
             {label: 'Contracts', to: '/docs/business-logic/contract-overview'},
             {label: 'Currencies', to: '/docs/business-logic/currency-overview'},
             {label: 'Price concepts', to: '/docs/business-logic/price-concept'},
-            {label: 'Chart data and periods', to: '/docs/realtime-chart-server/overview'},
           ],
         },
       ],
@@ -167,12 +202,30 @@ const config: Config = {
     docs: {
       sidebar: {
         hideable: true,
+        autoCollapseCategories: false,
       },
     },
     prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.oneDark,
-      additionalLanguages: ['bash'],
+      theme: {
+        ...prismThemes.github,
+        styles: [
+          ...prismThemes.github.styles,
+          {types: ['comment', 'prolog', 'doctype', 'cdata'], style: {color: '#606b77'}},
+          {types: ['namespace'], style: {opacity: 1}},
+          {types: ['string', 'attr-value'], style: {color: '#ad1554'}},
+          {types: ['entity', 'url', 'symbol', 'number', 'boolean', 'variable',
+            'constant', 'property', 'regex', 'inserted'], style: {color: '#126e6c'}},
+          {types: ['atrule', 'attr-name', 'selector'], style: {color: '#006a95'}},
+          {types: ['function', 'deleted', 'tag'], style: {color: '#b72d3b'}},
+        ],
+      },
+      darkTheme: {
+        ...prismThemes.oneDark,
+        plain: {color: '#cbd5df', backgroundColor: '#202d38'},
+        styles: [...prismThemes.oneDark.styles,
+          {types: ['comment', 'prolog', 'cdata'], style: {color: '#9aa9b5'}}],
+      },
+      additionalLanguages: ['bash', 'powershell'],
     },
     tableOfContents: {
       minHeadingLevel: 2,

@@ -1,4 +1,94 @@
 {
+  "api.group.Trading": {
+    "message": "交易"
+  },
+  "api.group.Account": {
+    "message": "戶口"
+  },
+  "api.group.Positions": {
+    "message": "持倉"
+  },
+  "api.group.Account Updates": {
+    "message": "戶口更新"
+  },
+  "api.group.Chart Data": {
+    "message": "圖表數據"
+  },
+  "api.group.Demo Account": {
+    "message": "模擬戶口"
+  },
+  "api.group.Trader": {
+    "message": "交易者"
+  },
+  "api.group.Account Recovery": {
+    "message": "戶口恢復"
+  },
+  "api.group.Configuration": {
+    "message": "設定"
+  },
+  "api.group.Orders": {
+    "message": "掛單"
+  },
+  "api.group.Trade History": {
+    "message": "交易紀錄"
+  },
+  "api.group.Web UI": {
+    "message": "網頁介面"
+  },
+  "api.group.Report Group": {
+    "message": "報表群組"
+  },
+  "api.group.Company Settings": {
+    "message": "公司設定"
+  },
+  "api.group.Session": {
+    "message": "工作階段"
+  },
+  "api.group.Token Management": {
+    "message": "Token 管理"
+  },
+  "api.group.Authentication": {
+    "message": "身分驗證"
+  },
+  "api.group.Chart Maintenance": {
+    "message": "圖表維護"
+  },
+  "apiReference.overview": {
+    "message": "總覽"
+  },
+  "apiReference.services": {
+    "message": "API 服務"
+  },
+  "theme.SearchBar.label": {
+    "message": "搜尋文件"
+  },
+  "theme.SearchBar.seeAll": {
+    "message": "查看全部結果"
+  },
+  "theme.SearchBar.noResultsText": {
+    "message": "找不到相關文件"
+  },
+  "theme.SearchBar.searchInContext": {
+    "message": "查看「{context}」內的全部結果"
+  },
+  "theme.SearchBar.seeAllOutsideContext": {
+    "message": "查看「{context}」以外的全部結果"
+  },
+  "theme.SearchPage.existingResultsTitle": {
+    "message": "「{query}」的搜尋結果"
+  },
+  "theme.SearchPage.emptyResultsTitle": {
+    "message": "搜尋文件"
+  },
+  "theme.SearchPage.documentsFound.plurals": {
+    "message": "找到 {count} 篇文件"
+  },
+  "theme.SearchPage.noResultsText": {
+    "message": "找不到相關文件"
+  },
+  "theme.SearchPage.searchContext.everywhere": {
+    "message": "全部"
+  },
   "theme.ErrorPageContent.title": {
     "message": "此頁已當機。",
     "description": "The title of the fallback page when the page crashed"
@@ -223,8 +313,7 @@
     "description": "The ARIA label for copy code blocks button"
   },
   "theme.CodeBlock.wordWrapToggle": {
-    "message": "切換自動換行",
-    "description": "The title attribute for toggle word wrapping button of code block lines"
+    "message": "切換自動換行"
   },
   "theme.docs.breadcrumbs.home": {
     "message": "主頁面",
@@ -325,5 +414,143 @@
   "theme.tags.tagsPageTitle": {
     "message": "標籤",
     "description": "The title of the tag list page"
-  }
+  },
+  "api.download": {
+    "message": "下載 OpenAPI 規格"
+  },
+  "api.requestSample": {
+    "message": "請求範例"
+  },
+  "api.code.tools": {
+    "message": "程式碼範例工具"
+  },
+  "api.code.fullscreen": {
+    "message": "程式碼範例"
+  },
+  "theme.CodeBlock.expandButtonAriaLabel": {
+    "message": "全螢幕檢視程式碼"
+  },
+  "theme.CodeBlock.exitButtonAriaLabel": {
+    "message": "關閉全螢幕檢視"
+  },
+  "theme.openapi.tabs.responses.label": {
+    "message": "回應"
+  },
+  "theme.openapi.statusCodes.schemaTitle": {
+    "message": "結構"
+  },
+  "theme.openapi.statusCodes.responseHeaders": {
+    "message": "回應標頭"
+  },
+  "theme.openapi.responseExamples.example": {
+    "message": "範例"
+  },
+  "theme.openapi.responseExamples.autoExample": {
+    "message": "範例（自動產生）"
+  },
+  "theme.openapi.schema.noSchema": {
+    "message": "沒有結構定義"
+  },
+  "theme.openapi.schemaItem.required": {
+    "message": "必填"
+  },
+  "theme.openapi.schemaItem.deprecated": {
+    "message": "已棄用"
+  },
+  "theme.openapi.schemaItem.nullable": {
+    "message": "可為 null"
+  },
+  "theme.openapi.schemaItem.defaultValue": {
+    "message": "預設值："
+  },
+  "theme.openapi.schemaItem.constantValue": {
+    "message": "固定值："
+  },
+  "theme.openapi.schemaItem.example": {
+    "message": "範例"
+  },
+  "theme.openapi.schemaItem.examples": {
+    "message": "範例"
+  },
+  "theme.openapi.schemaItem.description": {
+    "message": "說明"
+  },
+  "theme.openapi.schemaItem.enumValue": {
+    "message": "值"
+  },
+  "theme.openapi.schemaItem.enumDescription": {
+    "message": "說明"
+  },
+  "theme.openapi.schema.expansion.button": {
+    "message": "展開結構"
+  },
+  "theme.openapi.schema.expansion.menu": {
+    "message": "結構展開深度"
+  },
+  "theme.openapi.schema.expansion.all": {
+    "message": "全部展開"
+  },
+  "theme.openapi.schema.expansion.depthOption": {
+    "message": "深度 {depth}"
+  },
+  "theme.openapi.request.body.title": {
+    "message": "請求內容"
+  },
+  "theme.openapi.paramsDetails.parametersTitle": {
+    "message": "{type} 參數"
+  },
+  "theme.openapi.request.title": {
+    "message": "請求"
+  },
+  "theme.openapi.request.requiredLabel": {
+    "message": "必填"
+  },
+  "theme.openapi.request.parameters.title": {
+    "message": "參數"
+  },
+  "theme.openapi.request.auth.title": {
+    "message": "驗證"
+  },
+  "theme.openapi.request.baseUrl.title": {
+    "message": "伺服器網址"
+  },
+  "theme.openapi.request.accept.title": {
+    "message": "回應格式"
+  },
+  "theme.openapi.request.collapseAll": {
+    "message": "全部收起"
+  },
+  "theme.openapi.request.expandAll": {
+    "message": "全部展開"
+  },
+  "theme.openapi.export.button": {
+    "message": "下載"
+  },
+  "theme.openapi.export.openapiSpec": {
+    "message": "OpenAPI 規格"
+  },
+  "theme.openapi.auth.apiKey": {
+    "message": "API key"
+  },
+  "theme.openapi.auth.bearerToken": {
+    "message": "Bearer token"
+  },
+  "theme.openapi.paramOptions.hideOptional": {
+    "message": "隱藏選填參數"
+  },
+  "theme.openapi.paramOptions.showOptional": {
+    "message": "顯示選填參數"
+  },
+  "api.overview.fxserver.description": { "message": "透過 FxServer Trader REST API 提交及管理交易、查詢持倉與帳戶結餘，以及接收帳戶更新。" },
+  "api.overview.webproxy.description": { "message": "透過 WebProxy REST API 將 API key 交換為 access token，並查詢帳戶、合約設定及交易紀錄。" },
+  "api.overview.chart.description": { "message": "透過 Realtime Chart Server REST API 查詢支援商品的歷史 K 線、開市價及即時統計資料。" },
+  "api.overview.version": { "message": "API 版本" },
+  "api.authentication": { "message": "身份驗證" },
+  "api.overview.chart.guide": { "message": "有關 chart code 對應、支援週期及 K 線請求，請參閱" },
+  "api.overview.chart.guideLabel": { "message": "Realtime Chart Server 指南" },
+  "api.overview.auth.guide": { "message": "有關身份驗證、access token 及共用請求規則，請參閱" },
+  "api.overview.auth.guideLabel": { "message": "REST API 基礎" },
+  "api.overview.auth.bearer": { "message": "需要身份驗證的 endpoint 使用 Authorization header 傳送 Bearer credential。" },
+  "api.overview.auth.requirements": { "message": "請使用各 endpoint 的身份驗證方案所要求的 credential。即使 header 格式相同，也不代表不同方案的 credential 可以互換。" },
+  "api.overview.auth.details": { "message": "OpenAPI 身份驗證方案" }
 }

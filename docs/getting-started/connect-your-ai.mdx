@@ -1,0 +1,153 @@
+---
+title: Connect your AI tool
+sidebar_label: Connect your AI tool
+description: Connect Codex, Claude, Cursor, OpenClaw or Hermes to your Trader account with a local MCP server.
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+Use **mFT Trader API MCP** to check your account, get bid/ask prices and analyze completed candles from the AI tool you already use. No trading script is needed.
+
+:::info[Before you connect]
+This guide uses **Windows and local MCP (stdio)**, with trading disabled. Your AI host starts the adapter and supplies the model; you do not need a separate model API key or a server terminal. Setup guides are available for **Codex, Claude Code, Cursor, Claude Desktop, OpenClaw and Hermes**. A setup recipe is not host certification; see [host verification status](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/host-acceptance.md) for tested workflows.
+:::
+
+## 1. Get your account settings
+
+In your Trading Terminal, open **API Key Management**. Create a key with **Read** permission and copy the account's connection settings. Start with a confirmed demo account.
+
+Keep these values in your local account file, **not in an AI conversation**. Setup will show you where to enter them. You do not need to exchange the token manually or write a Python login.
+
+<details>
+<summary>Which values do I need?</summary>
+
+| Local account field | From API Key Management |
+| --- | --- |
+| `TRADER_API_KEY` | The generated API key, not a short-lived exchanged token |
+| `TRADER_API_USERNAME` | `username` |
+| `TRADER_API_TRADE_KEY` | `trade_key`, exactly as issued |
+| `TRADER_API_WEB_PROXY_URL` | WebProxy REST (`webproxy_endpoint`) |
+| `TRADER_API_FXSERVER_REST_URL` | FxServer REST |
+| `TRADER_API_FXSERVER_WS_URL` | FxServer WebSocket (`endpoint`) |
+| `TRADER_API_PRICE_AGENT_WS_URL` | Price Agent WebSocket (`price_agent_endpoint`) |
+| `TRADER_API_CHART_SERVER_URL` | ChartServer REST, not WebSocket |
+
+Use the connection settings as well as the Python snippet: the snippet may not include all REST URLs. Preserve the issued base paths and use the same account/environment throughout. A `demo` label does not turn a live account into a demo account.
+
+</details>
+
+## 2. Run guided setup
+
+[Install uv](https://docs.astral.sh/uv/getting-started/installation/) once, then open a new PowerShell terminal. uv manages Python and dependencies; you do not need Git or a manual virtual environment.
+
+:::info[Installation candidate]
+The MCP package is currently supplied as a wheel, not a published index package. Get the wheel and matching SHA-256 through the [package installation instructions](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/package-installation.md). Compare its hash with `Get-FileHash` and stop if it differs. Do not use a bare package-name install yet.
+:::
+
+From the folder containing the verified wheel, run:
+
+```powershell
+uvx --no-config --no-env-file --managed-python --python 3.12 `
+  --index https://mf-technologies.github.io/Python-package-repositories/simple/ `
+  --default-index https://pypi.org/simple `
+  --from .\mft_trader_api_mcp-0.1.0-py3-none-any.whl trader-api-mcp-setup
+```
+
+Setup creates an account file (normally `%USERPROFILE%\.mft-trader-api\.env`) and pauses. Fill it from API Key Management, save, then press Enter. Choose your AI tool when asked. Setup checks account access and prints **read-only MCP settings**; it does not edit your AI tool's configuration.
+
+Keep the wheel in a permanent folder, outside uv's cache. Keep the generated `command`, `args` and timeouts together. The AI tool uses those paths to start MCP automatically.
+
+## 3. Configure your client
+
+Select the same tool you chose in setup. Merge only the generated `mft-trader-api` entry, preserving other servers. Then restart or reload the host.
+
+**Read-only setup.** Check [your host's workflow status](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/host-acceptance.md) before enabling trading.
+
+<Tabs className="mcpHostTabs" groupId="trader-mcp-host">
+<TabItem value="codex" label="Codex" attributes={{className: 'mcpHostCodex'}} default>
+
+Choose **`codex`** in setup.
+
+1. Open `%USERPROFILE%\.codex\config.toml`.
+2. Add the generated `[mcp_servers.mft-trader-api]` block, or replace that block if it exists. Keep other settings.
+3. Restart Codex. Check MCP tools; CLI users can also run `codex mcp list`. Ask the account question below in a new chat.
+
+</TabItem>
+<TabItem value="claude-code" label="Claude Code" attributes={{className: 'mcpHostClaudeCode'}}>
+
+Choose **`claude-code`** in setup.
+
+1. Open `.mcp.json` in the folder you use with Claude Code.
+2. For a new file, paste the generated JSON. Otherwise merge only `mft-trader-api` into the existing `mcpServers` object, keeping valid JSON commas.
+3. Restart Claude Code in that folder, approve loading the server if prompted, and check `/mcp`.
+
+</TabItem>
+<TabItem value="cursor" label="Cursor" attributes={{className: 'mcpHostCursor'}}>
+
+Choose **`cursor`** in setup.
+
+1. Open `%USERPROFILE%\.cursor\mcp.json` for user settings, or `.cursor/mcp.json` for the current workspace; use one scope.
+2. Add or replace only `mft-trader-api` inside `mcpServers` with the generated entry.
+3. Reload Cursor and enable the server in MCP settings if needed. Use Agent chat for the first question.
+
+</TabItem>
+<TabItem value="claude-desktop" label="Claude Desktop" attributes={{className: 'mcpHostClaudeDesktop'}}>
+
+Choose **`claude-desktop`** in setup.
+
+1. Open **Settings → Developer → Edit Config**.
+2. Paste the generated JSON into an empty file, or merge only `mft-trader-api` into the existing `mcpServers` object.
+3. Save, fully quit and reopen Claude Desktop.
+
+</TabItem>
+<TabItem value="openclaw" label="OpenClaw" attributes={{className: 'mcpHostOpenClaw'}}>
+
+Choose **`openclaw`** in setup. **Read-only; actual-host workflow unverified.**
+
+1. Use a version with native outbound MCP support (`mcp.servers`).
+2. Merge `mcp.servers.mft-trader-api` into the active profile's `openclaw.json`, or use the running Gateway's **Settings → MCP** editor.
+3. Reload the owning runtime and ask the account question. The uvx, wheel and account-file paths must exist on that machine, not just on the device displaying chat.
+
+See the [OpenClaw recipe](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/agent-hosts.md#openclaw) for runtime and tool-policy checks. Do not stop a shared Gateway to test a connection.
+
+</TabItem>
+<TabItem value="hermes" label="Hermes" attributes={{className: 'mcpHostHermes'}}>
+
+Choose **`hermes`** in setup. **Read-only; actual-host workflow unverified.**
+
+1. Open the active Hermes Agent (Nous Research) profile's `config.yaml`, normally `~/.hermes/config.yaml`.
+2. Merge the generated `mcp_servers.mft-trader-api` entry into the existing mapping. Keep `trust: untrusted` and the profile's other settings.
+3. Start `hermes chat`, or use `/reload-mcp` on a supported active surface. Paths must exist on the machine running Hermes.
+
+See the [Hermes recipe](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/agent-hosts.md#hermes-agent-nous-research).
+
+</TabItem>
+</Tabs>
+
+For another **local stdio** client, select `stdio` in setup and use its generated `command` and `args`. This is not a remote connector URL for ChatGPT or a web-only AI app. Config support alone does not verify a host's trading approval UI.
+
+## 4. Ask your first question
+
+<CodeBlock className="mcpPrompt" language="text">{'Show my account balance, open positions and working orders. Do not place a trade.'}</CodeBlock>
+
+You should receive account data from MCP tools, not a generic answer or just a "connected" status. Then ask:
+
+<CodeBlock className="mcpPrompt" language="text">{'List the exact API contract codes available to my account.'}</CodeBlock>
+
+Choose a code from that result, then ask (replace the placeholder):
+
+<CodeBlock className="mcpPrompt" language="text">{'Show the latest bid/ask for <YOUR_API_CODE> and tell me whether the quote is fresh. Do not trade.'}</CodeBlock>
+
+The API code may differ from the terminal display name. Stale or unavailable data must be reported as such. No fresh quote during a closed session is not an account-connection pass or failure by itself.
+
+## Next steps
+
+- **Analyze:** ask for RSI(14), SMA(20) or EMA(20) on completed candles for your exact contract, with data quality. A local candle viewer is available; it is not terminal chart control or a phone chart.
+- **Prepare a demo trade:** follow [Demo trading](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/demo-trading.md) only after the selected host's approval path is verified. Read + Trade permission and separate opt-in are required. OpenClaw/Hermes remain read-only.
+- **Get help:** use [setup troubleshooting](https://github.com/mF-Technologies/trader-api-mcp/blob/main/SUPPORT.md#setup-troubleshooting), [host status](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/host-acceptance.md) or the [tool catalog](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/tool-catalog.md).
+
+:::warning[Before enabling trading]
+Each operation requires its own human form with the saved account, contract, amount and terms. A generic Allow prompt or a chat reply is not trade approval. For an `UNKNOWN` result, preserve the journal and check the original intent; do not submit again. This guide does not enable unattended or live-account trading.
+:::

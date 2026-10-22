@@ -11,20 +11,24 @@
     "message": "指南",
     "description": "Navbar item with label Guides"
   },
-  "item.label.Trader API": {
-    "message": "Trader API",
-    "description": "Navbar item with label Trader API"
+  "item.label.API reference": {
+    "message": "API 參考",
+    "description": "Navbar item with label API reference"
   },
-  "item.label.WebProxy API": {
-    "message": "WebProxy API",
-    "description": "Navbar item with label WebProxy API"
-  },
-  "item.label.Chart API": {
-    "message": "Chart API",
-    "description": "Navbar item with label Chart API"
+  "item.label.API reference overview": {"message": "API 參考概覽"},
+  "item.label.FxServer Trader API": {"message": "FxServer Trader API"},
+  "item.label.WebProxy API": {"message": "WebProxy API"},
+  "item.label.Realtime Chart Server API": {"message": "Realtime Chart Server API"},
+  "item.label.Examples": {
+    "message": "範例",
+    "description": "Navbar item with label Examples"
   },
   "item.label.Start building": {
     "message": "開始使用",
     "description": "Navbar item with label Start building"
+  },
+  "item.label.MCP": {
+    "message": "MCP",
+    "description": "Navbar item with label MCP"
   }
 }

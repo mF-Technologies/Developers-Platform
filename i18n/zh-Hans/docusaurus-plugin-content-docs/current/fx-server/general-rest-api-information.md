@@ -25,7 +25,9 @@ description: 验证请求、理解常见响应、计算有效 amount 并选择�
 
 ## 身份验证
 
-使用 bearer token 身份验证的端点需要 access token。身份验证由 WebProxy 会话开始，再创建 API key，最后交换成 access token。公开端点（包括 FxServer `GET /chartCode`）不需要 access token。
+建议从 Trading Terminal 的 **API Key Management** 开始：创建 API key，再[交换成 access token](#交换-api-key)。已有 API key 就不需要创建 WebProxy 会话。
+
+以下创建会话及 API key 的步骤，是通过程序管理 keys 的另一种方式。Bearer 身份验证必须使用各端点指定的凭证：session token、API key 或 access token，三者不可互换。公开端点（包括 FxServer `GET /chartCode`）不需要 access token。
 
 ### 创建会话
 

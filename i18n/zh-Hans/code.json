@@ -1,4 +1,94 @@
 {
+  "api.group.Trading": {
+    "message": "交易"
+  },
+  "api.group.Account": {
+    "message": "账户"
+  },
+  "api.group.Positions": {
+    "message": "持仓"
+  },
+  "api.group.Account Updates": {
+    "message": "账户更新"
+  },
+  "api.group.Chart Data": {
+    "message": "图表数据"
+  },
+  "api.group.Demo Account": {
+    "message": "模拟账户"
+  },
+  "api.group.Trader": {
+    "message": "交易者"
+  },
+  "api.group.Account Recovery": {
+    "message": "账户恢复"
+  },
+  "api.group.Configuration": {
+    "message": "设置"
+  },
+  "api.group.Orders": {
+    "message": "挂单"
+  },
+  "api.group.Trade History": {
+    "message": "交易记录"
+  },
+  "api.group.Web UI": {
+    "message": "网页界面"
+  },
+  "api.group.Report Group": {
+    "message": "报表组"
+  },
+  "api.group.Company Settings": {
+    "message": "公司设置"
+  },
+  "api.group.Session": {
+    "message": "会话"
+  },
+  "api.group.Token Management": {
+    "message": "Token 管理"
+  },
+  "api.group.Authentication": {
+    "message": "身份验证"
+  },
+  "api.group.Chart Maintenance": {
+    "message": "图表维护"
+  },
+  "apiReference.overview": {
+    "message": "总览"
+  },
+  "apiReference.services": {
+    "message": "API 服务"
+  },
+  "theme.SearchBar.label": {
+    "message": "搜索文档"
+  },
+  "theme.SearchBar.seeAll": {
+    "message": "查看全部结果"
+  },
+  "theme.SearchBar.noResultsText": {
+    "message": "找不到相关文档"
+  },
+  "theme.SearchBar.searchInContext": {
+    "message": "查看“{context}”内的全部结果"
+  },
+  "theme.SearchBar.seeAllOutsideContext": {
+    "message": "查看“{context}”以外的全部结果"
+  },
+  "theme.SearchPage.existingResultsTitle": {
+    "message": "“{query}”的搜索结果"
+  },
+  "theme.SearchPage.emptyResultsTitle": {
+    "message": "搜索文档"
+  },
+  "theme.SearchPage.documentsFound.plurals": {
+    "message": "找到 {count} 篇文档"
+  },
+  "theme.SearchPage.noResultsText": {
+    "message": "找不到相关文档"
+  },
+  "theme.SearchPage.searchContext.everywhere": {
+    "message": "全部"
+  },
   "theme.ErrorPageContent.title": {
     "message": "此页面已崩溃。",
     "description": "The title of the fallback page when the page crashed"
@@ -223,8 +313,7 @@
     "description": "The ARIA label for copy code blocks button"
   },
   "theme.CodeBlock.wordWrapToggle": {
-    "message": "切换自动换行",
-    "description": "The title attribute for toggle word wrapping button of code block lines"
+    "message": "切换自动换行"
   },
   "theme.docs.breadcrumbs.home": {
     "message": "首页",
@@ -325,5 +414,143 @@
   "theme.tags.tagsPageTitle": {
     "message": "标签",
     "description": "The title of the tag list page"
-  }
+  },
+  "api.download": {
+    "message": "下载 OpenAPI 规范"
+  },
+  "api.requestSample": {
+    "message": "请求示例"
+  },
+  "api.code.tools": {
+    "message": "代码示例工具"
+  },
+  "api.code.fullscreen": {
+    "message": "代码示例"
+  },
+  "theme.CodeBlock.expandButtonAriaLabel": {
+    "message": "全屏查看代码"
+  },
+  "theme.CodeBlock.exitButtonAriaLabel": {
+    "message": "关闭全屏视图"
+  },
+  "theme.openapi.tabs.responses.label": {
+    "message": "响应"
+  },
+  "theme.openapi.statusCodes.schemaTitle": {
+    "message": "结构"
+  },
+  "theme.openapi.statusCodes.responseHeaders": {
+    "message": "响应头"
+  },
+  "theme.openapi.responseExamples.example": {
+    "message": "示例"
+  },
+  "theme.openapi.responseExamples.autoExample": {
+    "message": "示例（自动生成）"
+  },
+  "theme.openapi.schema.noSchema": {
+    "message": "没有结构定义"
+  },
+  "theme.openapi.schemaItem.required": {
+    "message": "必填"
+  },
+  "theme.openapi.schemaItem.deprecated": {
+    "message": "已弃用"
+  },
+  "theme.openapi.schemaItem.nullable": {
+    "message": "可为 null"
+  },
+  "theme.openapi.schemaItem.defaultValue": {
+    "message": "默认值："
+  },
+  "theme.openapi.schemaItem.constantValue": {
+    "message": "固定值："
+  },
+  "theme.openapi.schemaItem.example": {
+    "message": "示例"
+  },
+  "theme.openapi.schemaItem.examples": {
+    "message": "示例"
+  },
+  "theme.openapi.schemaItem.description": {
+    "message": "说明"
+  },
+  "theme.openapi.schemaItem.enumValue": {
+    "message": "值"
+  },
+  "theme.openapi.schemaItem.enumDescription": {
+    "message": "说明"
+  },
+  "theme.openapi.schema.expansion.button": {
+    "message": "展开结构"
+  },
+  "theme.openapi.schema.expansion.menu": {
+    "message": "结构展开深度"
+  },
+  "theme.openapi.schema.expansion.all": {
+    "message": "全部展开"
+  },
+  "theme.openapi.schema.expansion.depthOption": {
+    "message": "深度 {depth}"
+  },
+  "theme.openapi.request.body.title": {
+    "message": "请求体"
+  },
+  "theme.openapi.paramsDetails.parametersTitle": {
+    "message": "{type} 参数"
+  },
+  "theme.openapi.request.title": {
+    "message": "请求"
+  },
+  "theme.openapi.request.requiredLabel": {
+    "message": "必填"
+  },
+  "theme.openapi.request.parameters.title": {
+    "message": "参数"
+  },
+  "theme.openapi.request.auth.title": {
+    "message": "身份验证"
+  },
+  "theme.openapi.request.baseUrl.title": {
+    "message": "服务器地址"
+  },
+  "theme.openapi.request.accept.title": {
+    "message": "响应格式"
+  },
+  "theme.openapi.request.collapseAll": {
+    "message": "全部收起"
+  },
+  "theme.openapi.request.expandAll": {
+    "message": "全部展开"
+  },
+  "theme.openapi.export.button": {
+    "message": "下载"
+  },
+  "theme.openapi.export.openapiSpec": {
+    "message": "OpenAPI 规范"
+  },
+  "theme.openapi.auth.apiKey": {
+    "message": "API key"
+  },
+  "theme.openapi.auth.bearerToken": {
+    "message": "Bearer token"
+  },
+  "theme.openapi.paramOptions.hideOptional": {
+    "message": "隐藏可选参数"
+  },
+  "theme.openapi.paramOptions.showOptional": {
+    "message": "显示可选参数"
+  },
+  "api.overview.fxserver.description": { "message": "通过 FxServer Trader REST API 提交及管理交易、查询持仓与账户余额，以及接收账户更新。" },
+  "api.overview.webproxy.description": { "message": "通过 WebProxy REST API 将 API key 交换为 access token，并查询账户、合约设置及交易记录。" },
+  "api.overview.chart.description": { "message": "通过 Realtime Chart Server REST API 查询支持品种的历史 K 线、开盘价及实时统计数据。" },
+  "api.overview.version": { "message": "API 版本" },
+  "api.authentication": { "message": "身份验证" },
+  "api.overview.chart.guide": { "message": "有关 chart code 映射、支持周期及 K 线请求，请参阅" },
+  "api.overview.chart.guideLabel": { "message": "Realtime Chart Server 指南" },
+  "api.overview.auth.guide": { "message": "有关身份验证、access token 及通用请求规则，请参阅" },
+  "api.overview.auth.guideLabel": { "message": "REST API 基础" },
+  "api.overview.auth.bearer": { "message": "需要身份验证的 endpoint 使用 Authorization header 发送 Bearer credential。" },
+  "api.overview.auth.requirements": { "message": "请使用各 endpoint 的身份验证方案所要求的 credential。即使 header 格式相同，也不代表不同方案的 credential 可以互换。" },
+  "api.overview.auth.details": { "message": "OpenAPI 身份验证方案" }
 }

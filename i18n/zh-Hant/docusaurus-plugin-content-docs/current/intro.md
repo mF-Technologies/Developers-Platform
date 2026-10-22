@@ -5,7 +5,12 @@ title: 平台概覽
 description: 了解 Trader APIs，並按建議流程完成整合。
 ---
 
-Trader OpenAPI 將身份驗證、交易及圖表數據分由三組 API 處理：
+## 選擇接入方式
+
+- **使用 AI 助手：** [透過 MCP 連接 AI 工具](./getting-started/connect-your-ai)以對話查詢帳戶、報價及市場數據。先以唯讀方式開始；demo 交易需要獨立批准。
+- **自行編寫程式：** 按[完成第一筆交易](./getting-started/first-trade)使用 REST，或使用 [Trader API Client Starter Kit](https://github.com/mF-Technologies/trader-api-client-starter-kit) 的可執行範例及演算法。
+
+以下 REST 整合將身份驗證、交易及圖表數據分由三組 API 處理。MCP adapter 會代你處理這些連線。
 
 | 服務 | 用途 |
 | --- | --- |

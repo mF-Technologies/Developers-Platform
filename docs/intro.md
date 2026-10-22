@@ -5,7 +5,12 @@ title: Platform overview
 description: Understand the Trader APIs and follow the recommended integration workflow.
 ---
 
-Trader OpenAPI separates authentication, trading, and chart data into three APIs:
+## Choose how to connect
+
+- **Use your AI assistant:** [Connect your AI tool with MCP](./getting-started/connect-your-ai.mdx) to ask about your account, prices and market data. Start read-only; demo trading requires separate approval.
+- **Build with code:** [Make your first trade](./getting-started/first-trade.md) with REST, or use the [Trader API Client Starter Kit](https://github.com/mF-Technologies/trader-api-client-starter-kit) for runnable examples and algorithms.
+
+The REST integration below separates authentication, trading, and chart data into three APIs. The MCP adapter handles these connections for you.
 
 | Surface | Use it for |
 | --- | --- |

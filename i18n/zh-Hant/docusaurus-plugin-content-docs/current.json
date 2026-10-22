@@ -1,4 +1,67 @@
 {
+  "sidebar.mainSidebar.category.fxserver.Trading": {
+    "message": "交易"
+  },
+  "sidebar.mainSidebar.category.fxserver.Account": {
+    "message": "戶口"
+  },
+  "sidebar.mainSidebar.category.fxserver.Positions": {
+    "message": "持倉"
+  },
+  "sidebar.mainSidebar.category.fxserver.Account Updates": {
+    "message": "戶口更新"
+  },
+  "sidebar.mainSidebar.category.fxserver.Chart Data": {
+    "message": "圖表數據"
+  },
+  "sidebar.mainSidebar.category.webproxy.Demo Account": {
+    "message": "模擬戶口"
+  },
+  "sidebar.mainSidebar.category.webproxy.Trader": {
+    "message": "交易者"
+  },
+  "sidebar.mainSidebar.category.webproxy.Account Recovery": {
+    "message": "戶口恢復"
+  },
+  "sidebar.mainSidebar.category.webproxy.Account": {
+    "message": "戶口"
+  },
+  "sidebar.mainSidebar.category.webproxy.Configuration": {
+    "message": "設定"
+  },
+  "sidebar.mainSidebar.category.webproxy.Orders": {
+    "message": "掛單"
+  },
+  "sidebar.mainSidebar.category.webproxy.Trade History": {
+    "message": "交易紀錄"
+  },
+  "sidebar.mainSidebar.category.webproxy.Positions": {
+    "message": "持倉"
+  },
+  "sidebar.mainSidebar.category.webproxy.Web UI": {
+    "message": "網頁介面"
+  },
+  "sidebar.mainSidebar.category.webproxy.Report Group": {
+    "message": "報表群組"
+  },
+  "sidebar.mainSidebar.category.webproxy.Company Settings": {
+    "message": "公司設定"
+  },
+  "sidebar.mainSidebar.category.webproxy.Session": {
+    "message": "工作階段"
+  },
+  "sidebar.mainSidebar.category.webproxy.Token Management": {
+    "message": "Token 管理"
+  },
+  "sidebar.mainSidebar.category.webproxy.Authentication": {
+    "message": "身分驗證"
+  },
+  "sidebar.mainSidebar.category.chart.Chart Maintenance": {
+    "message": "圖表維護"
+  },
+  "sidebar.mainSidebar.category.chart.Chart Data": {
+    "message": "圖表數據"
+  },
   "version.label": {
     "message": "目前版本",
     "description": "The label for version current"
@@ -7,12 +70,24 @@
     "message": "開始使用",
     "description": "The label for category 'Get started' in sidebar 'mainSidebar'"
   },
+  "sidebar.mainSidebar.category.Guides": {
+    "message": "指南",
+    "description": "The label for category 'Guides' in sidebar 'mainSidebar'"
+  },
+  "sidebar.mainSidebar.category.MCP": {
+    "message": "MCP",
+    "description": "The label for category 'MCP' in sidebar 'mainSidebar'"
+  },
   "sidebar.mainSidebar.category.API reference": {
     "message": "API 參考",
     "description": "The label for category 'API reference' in sidebar 'mainSidebar'"
   },
-  "sidebar.mainSidebar.category.Trading concepts": {
-    "message": "交易概念",
-    "description": "The label for category 'Trading concepts' in sidebar 'mainSidebar'"
+  "sidebar.mainSidebar.category.Concepts": {
+    "message": "核心概念",
+    "description": "The label for category 'Concepts' in sidebar 'mainSidebar'"
+  },
+  "sidebar.mainSidebar.category.Examples": {
+    "message": "範例",
+    "description": "The label for category 'Examples' in sidebar 'mainSidebar'"
   }
 }

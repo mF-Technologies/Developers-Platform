@@ -5,6 +5,12 @@
 /.docusaurus
 /build
 /.cache-loader
+# Derived from the committed OpenAPI specifications by generate:api.
+/docs/api/
+/i18n/zh-Hant/docusaurus-plugin-content-docs/current/api/
+/i18n/zh-Hans/docusaurus-plugin-content-docs/current/api/
+/src/generated/
+/static/openapi/
 
 # Local configuration
 .env

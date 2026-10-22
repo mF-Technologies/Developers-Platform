@@ -25,7 +25,9 @@ The following responses are used by one or more endpoints. Check each endpoint r
 
 ## Authentication
 
-Endpoints that declare bearer authentication require an access token. Authentication starts with a WebProxy session, continues with an API key, and ends with an access token. Public endpoints, including FxServer `GET /chartCode`, do not require an access token.
+Start in **API Key Management** in your Trading Terminal: create an API key, then [exchange it for an access token](#exchange-an-api-key). You do not need to create a WebProxy session when you already have an API key.
+
+The session and API-key creation steps below are an alternative for clients that manage keys programmatically. Bearer authentication uses the credential required by each endpoint: a session token, API key, or access token; these credentials are not interchangeable. Public endpoints, including FxServer `GET /chartCode`, do not require an access token.
 
 ### Create a session
 

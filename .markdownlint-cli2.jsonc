@@ -1,9 +1,10 @@
 {
+  "ignores": ["docs/api/**"],
   "config": {
     "default": true,
     "MD013": false,
     "MD033": {
-      "allowed_elements": ["ApiDocMdx"]
+      "allowed_elements": ["ApiDocMdx", "details", "summary", "Tabs", "TabItem", "CodeBlock"]
     }
   }
 }

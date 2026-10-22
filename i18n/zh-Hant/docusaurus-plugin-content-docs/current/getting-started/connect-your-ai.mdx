@@ -1,0 +1,153 @@
+---
+title: 連接 AI 工具
+sidebar_label: 連接 AI 工具
+description: 透過本機 MCP server，將 Codex、Claude、Cursor、OpenClaw 或 Hermes 連接至 Trader 帳戶。
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import CodeBlock from '@theme/CodeBlock';
+
+使用 **mFT Trader API MCP**，在你慣用的 AI 工具內查詢帳戶、取得買賣報價及分析已完成 K 線，不需要編寫交易程式。
+
+:::info[接入前]
+本指南使用 **Windows 及本機 MCP（stdio）**，預設停用交易。AI 工具會啟動 adapter 並提供模型；你不需要額外的模型 API key，亦不需要另開 server terminal。提供 **Codex、Claude Code、Cursor、Claude Desktop、OpenClaw 及 Hermes** 的設定指南。設定步驟不代表已認證該工具；已測試的流程請參閱[各工具驗證狀態](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/host-acceptance.md)。
+:::
+
+## 1. 取得帳戶設定
+
+登入 Trading Terminal，開啟 **API Key Management**。建立具有 **Read** 權限的 API key，並複製帳戶的連線設定。請先使用已確認的 demo 帳戶。
+
+這些資料只填入本機帳戶檔案，**不要貼入 AI 對話**。設定程式會顯示填寫位置。你不需要自行交換 token 或編寫 Python 登入程式。
+
+<details>
+<summary>需要哪些資料？</summary>
+
+| 本機帳戶欄位 | API Key Management 提供的資料 |
+| --- | --- |
+| `TRADER_API_KEY` | 產生的 API key，不是交換後的短效 token |
+| `TRADER_API_USERNAME` | `username` |
+| `TRADER_API_TRADE_KEY` | `trade_key`，按原值填寫 |
+| `TRADER_API_WEB_PROXY_URL` | WebProxy REST（`webproxy_endpoint`） |
+| `TRADER_API_FXSERVER_REST_URL` | FxServer REST |
+| `TRADER_API_FXSERVER_WS_URL` | FxServer WebSocket（`endpoint`） |
+| `TRADER_API_PRICE_AGENT_WS_URL` | Price Agent WebSocket（`price_agent_endpoint`） |
+| `TRADER_API_CHART_SERVER_URL` | ChartServer REST，不是 WebSocket |
+
+同時參考連線設定及 Python 設定片段：片段未必包含所有 REST URLs。保留系統提供的 base paths，並全程使用同一帳戶及環境。`demo` 標籤不會將真實帳戶變成 demo 帳戶。
+
+</details>
+
+## 2. 執行引導設定
+
+先[安裝 uv](https://docs.astral.sh/uv/getting-started/installation/)，再開新的 PowerShell terminal。uv 會管理 Python 及相依套件，不需要 Git 或自行建立虛擬環境。
+
+:::info[安裝候選版本]
+目前 MCP 套件以 wheel 提供，尚未在 package index 發佈。按[套件安裝說明](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/package-installation.md)取得 wheel 及對應 SHA-256，以 `Get-FileHash` 比對；不相符便停止。暫時不要只用套件名稱安裝。
+:::
+
+在已核對 wheel 的資料夾執行：
+
+```powershell
+uvx --no-config --no-env-file --managed-python --python 3.12 `
+  --index https://mf-technologies.github.io/Python-package-repositories/simple/ `
+  --default-index https://pypi.org/simple `
+  --from .\mft_trader_api_mcp-0.1.0-py3-none-any.whl trader-api-mcp-setup
+```
+
+設定程式會建立帳戶檔案（通常是 `%USERPROFILE%\.mft-trader-api\.env`）並暫停。填入 API Key Management 的資料、儲存，再按 Enter；然後選擇你的 AI 工具。程式會檢查帳戶連線並輸出**唯讀 MCP 設定**，不會修改 AI 工具的設定檔。
+
+將 wheel 保留在固定資料夾，不要放在 uv 快取內。完整保留輸出的 `command`、`args` 及逾時設定，AI 工具會按這些路徑自動啟動 MCP。
+
+## 3. 設定用戶端
+
+選擇剛才設定時所選的工具。只合併輸出的 `mft-trader-api` 項目，保留其他 servers，再重新啟動或載入工具。
+
+**唯讀設定。** 啟用交易前，請查看[所選工具的流程驗證狀態](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/host-acceptance.md)。
+
+<Tabs className="mcpHostTabs" groupId="trader-mcp-host">
+<TabItem value="codex" label="Codex" attributes={{className: 'mcpHostCodex'}} default>
+
+設定時選 **`codex`**。
+
+1. 開啟 `%USERPROFILE%\.codex\config.toml`。
+2. 加入輸出的 `[mcp_servers.mft-trader-api]` 區塊；已存在便只替換該區塊，保留其他設定。
+3. 重新啟動 Codex，檢查 MCP tools；CLI 用戶亦可執行 `codex mcp list`。在新對話問下方的帳戶問題。
+
+</TabItem>
+<TabItem value="claude-code" label="Claude Code" attributes={{className: 'mcpHostClaudeCode'}}>
+
+設定時選 **`claude-code`**。
+
+1. 開啟使用 Claude Code 的資料夾內的 `.mcp.json`。
+2. 新檔案可貼上完整 JSON；已有設定便只將 `mft-trader-api` 合併至現有 `mcpServers`，保留正確的 JSON 逗號。
+3. 在該資料夾重新啟動 Claude Code，按提示允許載入 server，並以 `/mcp` 檢查。
+
+</TabItem>
+<TabItem value="cursor" label="Cursor" attributes={{className: 'mcpHostCursor'}}>
+
+設定時選 **`cursor`**。
+
+1. 開啟用戶設定 `%USERPROFILE%\.cursor\mcp.json`，或目前工作區的 `.cursor/mcp.json`，選其中一種範圍。
+2. 在 `mcpServers` 內加入或替換輸出的 `mft-trader-api` 項目。
+3. 重新載入 Cursor，如有需要在 MCP 設定啟用 server；在 Agent 對話問第一個問題。
+
+</TabItem>
+<TabItem value="claude-desktop" label="Claude Desktop" attributes={{className: 'mcpHostClaudeDesktop'}}>
+
+設定時選 **`claude-desktop`**。
+
+1. 開啟 **Settings → Developer → Edit Config**。
+2. 空白檔案可貼上完整 JSON；已有設定便只將 `mft-trader-api` 合併至現有 `mcpServers`。
+3. 儲存後完全結束 Claude Desktop，再重新開啟。
+
+</TabItem>
+<TabItem value="openclaw" label="OpenClaw" attributes={{className: 'mcpHostOpenClaw'}}>
+
+設定時選 **`openclaw`**。**僅限唯讀；實際工具內的流程尚未驗證。**
+
+1. 使用支援原生 outbound MCP（`mcp.servers`）的版本。
+2. 將 `mcp.servers.mft-trader-api` 合併至使用中的 profile 的 `openclaw.json`，或使用已運行 Gateway 的 **Settings → MCP** 編輯器。
+3. 重新載入所屬執行環境，再問帳戶問題。uvx、wheel 及帳戶檔案路徑必須存在於該機器，而非只存在於顯示對話的裝置。
+
+執行環境及工具權限檢查請參閱 [OpenClaw 接入步驟](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/agent-hosts.md#openclaw)。不要為測試連線而停止共用 Gateway。
+
+</TabItem>
+<TabItem value="hermes" label="Hermes" attributes={{className: 'mcpHostHermes'}}>
+
+設定時選 **`hermes`**。**僅限唯讀；實際工具內的流程尚未驗證。**
+
+1. 開啟使用中的 Hermes Agent（Nous Research）profile 的 `config.yaml`，通常位於 `~/.hermes/config.yaml`。
+2. 將輸出的 `mcp_servers.mft-trader-api` 合併至現有設定。保留 `trust: untrusted` 及其他 profile 設定。
+3. 啟動 `hermes chat`，或在支援的對話介面執行 `/reload-mcp`。路徑必須存在於運行 Hermes 的機器。
+
+詳見 [Hermes 接入步驟](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/agent-hosts.md#hermes-agent-nous-research)。
+
+</TabItem>
+</Tabs>
+
+其他**本機 stdio** client 可在設定時選 `stdio`，使用輸出的 `command` 及 `args`。這不是供 ChatGPT 或純網頁 AI 工具使用的 remote connector URL。支援設定格式，不代表已驗證該工具的交易批准介面。
+
+## 4. 問第一個問題
+
+<CodeBlock className="mcpPrompt" language="text">{'顯示我的帳戶餘額、持倉及掛單，不要落單。'}</CodeBlock>
+
+成功時應透過 MCP tools 回傳帳戶資料，而非一般回答或只有「已連線」狀態。然後問：
+
+<CodeBlock className="mcpPrompt" language="text">{'列出我的帳戶可用的確切 API contract codes。'}</CodeBlock>
+
+從結果選擇 code，再問（替換佔位值）：
+
+<CodeBlock className="mcpPrompt" language="text">{'顯示 <YOUR_API_CODE> 的最新 bid／ask，並說明報價是否新鮮。不要落單。'}</CodeBlock>
+
+API code 可能與 terminal 顯示名稱不同。數據過時或不可用時必須如實說明。收市時沒有新鮮報價，不能單憑這點判定帳戶連線成功或失敗。
+
+## 下一步
+
+- **分析市場：** 要求計算確切合約的已完成 K 線 RSI(14)、SMA(20) 或 EMA(20)，並說明數據品質。另有本機 K 線檢視器，但不是 terminal 圖表控制或手機圖表。
+- **準備 demo 交易：** 先驗證所選工具的批准流程，再按 [Demo trading](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/demo-trading.md)另行啟用；需要 Read + Trade 權限。OpenClaw／Hermes 維持唯讀。
+- **取得協助：** 參閱[設定疑難排解](https://github.com/mF-Technologies/trader-api-mcp/blob/main/SUPPORT.md#setup-troubleshooting)、[工具驗證狀態](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/host-acceptance.md)及[工具目錄](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/tool-catalog.md)。
+
+:::warning[啟用交易前]
+每項操作都需要獨立人手表單，顯示已保存的帳戶、合約、數量及條款。一般 Allow 提示或對話回覆不等於交易批准。結果為 `UNKNOWN` 時，保留 journal 並查詢原 intent，不要再次提交。本指南不會啟用無人監督或真實帳戶交易。
+:::
