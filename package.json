@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "pregen-api-docs": "node -e \"require('fs').mkdirSync('generated/api', {recursive: true})\"",
+    "gen-api-docs": "docusaurus clean-api-docs all && docusaurus gen-api-docs all",
+    "test:api-docs": "bun run gen-api-docs && bun test tests/api-docs.test.js",
+    "prestart": "bun run gen-api-docs",
     "start": "docusaurus start",
+    "prebuild": "bun run gen-api-docs",
     "build": "docusaurus build",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
@@ -15,14 +20,19 @@
   "dependencies": {
     "@docusaurus/core": "3.10.2",
     "@docusaurus/faster": "3.10.2",
+    "@docusaurus/plugin-client-redirects": "3.10.2",
+    "@docusaurus/plugin-content-docs": "3.10.2",
     "@docusaurus/preset-classic": "3.10.2",
     "@docusaurus/theme-mermaid": "3.10.2",
     "@mdx-js/react": "^3.1.0",
     "clsx": "^2.1.1",
+    "docusaurus-plugin-openapi-docs": "5.2.0",
+    "docusaurus-theme-openapi-docs": "5.2.0",
+    "js-yaml": "^4.1.0",
+    "path-browserify": "^1.0.1",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "redocusaurus": "2.5.2"
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.10.2",

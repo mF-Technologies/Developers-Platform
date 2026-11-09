@@ -1,6 +1,7 @@
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import {themes as prismThemes} from 'prism-react-renderer';
+import {apis} from './openapi.config';
 
 const siteUrl = new URL(
   process.env.CI_PAGES_URL ??
@@ -13,10 +14,6 @@ const config: Config = {
   title: 'mF Technologies Developer Platform',
   tagline: 'Developer documentation for Trader OpenAPI',
   favicon: 'img/mf-technologies-mark.svg',
-
-  future: {
-    v4: true,
-  },
 
   url: siteUrl.origin,
   baseUrl: process.env.BASE_URL ?? inferredBaseUrl,
@@ -40,6 +37,19 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
+          async sidebarItemsGenerator({defaultSidebarItemsGenerator, ...args}) {
+            const items = await defaultSidebarItemsGenerator(args);
+
+            function removeHiddenItems(items: any[]): any[] {
+              return items
+                .filter((item) => !item.customProps?.hidden)
+                .map((item) => item.type === 'category'
+                  ? {...item, items: removeHiddenItems(item.items)}
+                  : item);
+            }
+
+            return removeHiddenItems(items);
+          },
         },
         blog: false,
         theme: {
@@ -47,34 +57,53 @@ const config: Config = {
         },
       } satisfies Preset.Options,
     ],
-    [
-      'redocusaurus',
-      {
-        specs: [
-          {
-            id: 'fxserver-trader-openapi',
-            spec: 'openapi/fxserver-trader.yaml',
-            route: '/reference/fxserver-trader',
-          },
-          {
-            id: 'webproxy-openapi',
-            spec: 'openapi/webproxy.yml',
-            route: '/reference/webproxy',
-          },
-          {
-            id: 'realtime-chart-server-openapi',
-            spec: 'openapi/realtime-chart-server.yml',
-            route: '/reference/realtime-chart-server',
-          },
-        ],
-        theme: {
-          primaryColor: '#ed1c24',
-        },
-      },
-    ],
   ],
 
-  themes: ['@docusaurus/theme-mermaid'],
+  plugins: [
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'api',
+        path: 'generated/api',
+        routeBasePath: 'api',
+        sidebarPath: './api-sidebars.ts',
+        docItemComponent: '@theme/ApiItem',
+      },
+    ],
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'openapi',
+        docsPluginId: 'api',
+        config: Object.fromEntries(apis.map(({id, spec}) => [id, {
+          specPath: `openapi/${spec}`,
+          outputDir: `generated/api/${id}`,
+          sidebarOptions: {groupPathsBy: 'tag'},
+        }])),
+      },
+    ],
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        redirects: apis.map(({id, intro}) => ({
+          from: `/reference/${id}`,
+          to: `/api/${id}/${intro}`,
+        })),
+      },
+    ],
+    function openApiWebpackPlugin() {
+      return {
+        name: 'openapi-webpack',
+        configureWebpack() {
+          return {
+            resolve: {fallback: {path: require.resolve('path-browserify')}},
+          };
+        },
+      };
+    },
+  ],
+
+  themes: ['@docusaurus/theme-mermaid', 'docusaurus-theme-openapi-docs'],
 
   markdown: {
     mermaid: true,

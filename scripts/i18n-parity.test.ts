@@ -91,7 +91,7 @@ describe('localized public documentation', () => {
 
       for (const wrapper of apiWrappers) {
         const contents = readFileSync(resolve(localeRoot, wrapper), 'utf8');
-        expect(contents).toContain('ApiDocMdx');
+        expect(contents).toContain('Redirect');
         expect(contents).toContain('OpenAPI');
         expect(contents).toContain(locale === 'zh-Hant' ? '英文維護' : '英文维护');
       }

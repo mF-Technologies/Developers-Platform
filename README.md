@@ -1,6 +1,6 @@
 # mF Technologies Developer Platform
 
-Developer onboarding and interactive OpenAPI reference for the Trader platform. The site is built with Docusaurus 3.10, TypeScript, Bun, and Redocusaurus.
+Developer onboarding and generated OpenAPI reference for the Trader platform. The site is built with Docusaurus 3.10, TypeScript, Bun, and docusaurus-openapi-docs.
 
 ## Requirements
 
@@ -46,23 +46,7 @@ The workflow in `.github/workflows/github-pages.yml` validates pull requests and
 
 Before the first deployment, set **Settings > Pages > Build and deployment > Source** to **GitHub Actions** in the GitHub repository.
 
-## Update `redocly.yaml` to control open api tags visibility
+## API references
 
-```yaml
-plugins:
-  - ./redocly-plugins/tag-whitelist.cjs
-
-decorators:
-  tag-whitelist/only:
-    tags: # All tags are hidden by default. You need to add tags to make them visible.
-      - Authentication
-      - Configuration
-      - Account
-      - Trading
-      - Orders
-      - Positions
-      - Trade History
-      - Account Updates
-      - Chart Data
-  remove-unused-components: on
-```
+OpenAPI references are generated from the committed specifications before development and production builds. Run
+`bun run gen-api-docs` to regenerate them manually.

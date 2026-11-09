@@ -6,7 +6,8 @@ pagination_prev: realtime-chart-server/overview
 pagination_next: null
 ---
 
-import ApiDocMdx from '@theme/ApiDocMdx';
+import {Redirect} from '@docusaurus/router';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 :::note[API 規格語言]
 
@@ -14,4 +15,4 @@ import ApiDocMdx from '@theme/ApiDocMdx';
 
 :::
 
-<ApiDocMdx id="realtime-chart-server-openapi" />
+<Redirect to={useBaseUrl('/api/realtime-chart-server/chart-server')} />

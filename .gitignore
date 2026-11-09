@@ -3,6 +3,7 @@
 
 # Docusaurus output
 /.docusaurus
+/generated/api
 /build
 /.cache-loader
 
