@@ -131,9 +131,10 @@ const config: Config = {
           ],
         },
         {
-          to: '/docs/getting-started/connect-your-ai',
+          to: '/docs/mcp/overview',
           label: 'MCP',
           position: 'left',
+          activeBaseRegex: '/docs/(mcp/[^/]+|getting-started/connect-your-ai)/?$',
         },
         {
           href: 'https://github.com/mF-Technologies/trader-api-client-starter-kit',
@@ -185,6 +186,8 @@ const config: Config = {
           title: 'MCP & examples',
           items: [
             {label: 'Connect your AI tool', to: '/docs/getting-started/connect-your-ai'},
+            {label: 'MCP Tools', to: '/docs/mcp/tools'},
+            {label: 'Trade with AI', to: '/docs/mcp/trading'},
             {label: 'Trader API Client Starter Kit', href: 'https://github.com/mF-Technologies/trader-api-client-starter-kit', target: '_blank'},
           ],
         },

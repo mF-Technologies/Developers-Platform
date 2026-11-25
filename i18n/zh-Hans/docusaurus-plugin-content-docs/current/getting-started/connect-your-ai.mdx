@@ -7,147 +7,132 @@ description: 通过本地 MCP server，将 Codex、Claude、Cursor、OpenClaw �
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import CodeBlock from '@theme/CodeBlock';
+import McpConfigExample from '@site/src/components/McpConfigExample';
 
-使用 **mFT Trader API MCP**，在你常用的 AI 工具内查询账户、获取买卖报价及分析已完成 K 线，不需要编写交易程序。
+在 Windows 将 Trader 账户连接至 AI 客户端，即可查看余额、持仓和挂单。本地 MCP 默认为只读。
 
-:::info[接入前]
-本指南使用 **Windows 及本地 MCP（stdio）**，默认停用交易。AI 工具会启动 adapter 并提供模型；你不需要额外的模型 API key，也不需要另开 server terminal。提供 **Codex、Claude Code、Cursor、Claude Desktop、OpenClaw 及 Hermes** 的设置指南。设置步骤不代表已认证该工具；已测试的流程请参阅[各工具验证状态](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/host-acceptance.md)。
-:::
+[选择 AI 客户端](#configure-mcp-client)
 
 ## 1. 获取账户设置
 
-登录 Trading Terminal，打开 **API Key Management**。创建具有 **Read** 权限的 API key，并复制账户的连接设置。请先使用已确认的 demo 账户。
+在交易终端打开 **API Key Management**，创建具有 **Read** 权限的密钥。请使用同一账户的密钥和连接设置，并只填入设置程序指定的本地文件。
 
-这些资料只填入本地账户文件，**不要粘贴到 AI 对话**。设置程序会显示填写位置。你不需要自行交换 token 或编写 Python 登录程序。
+## 2. 安装并连接
 
-<details>
-<summary>需要哪些资料？</summary>
-
-| 本地账户字段 | API Key Management 提供的资料 |
-| --- | --- |
-| `TRADER_API_KEY` | 生成的 API key，不是交换后的短期 token |
-| `TRADER_API_USERNAME` | `username` |
-| `TRADER_API_TRADE_KEY` | `trade_key`，按原值填写 |
-| `TRADER_API_WEB_PROXY_URL` | WebProxy REST（`webproxy_endpoint`） |
-| `TRADER_API_FXSERVER_REST_URL` | FxServer REST |
-| `TRADER_API_FXSERVER_WS_URL` | FxServer WebSocket（`endpoint`） |
-| `TRADER_API_PRICE_AGENT_WS_URL` | Price Agent WebSocket（`price_agent_endpoint`） |
-| `TRADER_API_CHART_SERVER_URL` | ChartServer REST，不是 WebSocket |
-
-同时参考连接设置及 Python 配置片段：片段不一定包含所有 REST URLs。保留系统提供的 base paths，并全程使用同一账户及环境。`demo` 标签不会将真实账户变成 demo 账户。
-
-</details>
-
-## 2. 运行引导设置
-
-先[安装 uv](https://docs.astral.sh/uv/getting-started/installation/)，再打开新的 PowerShell terminal。uv 会管理 Python 及依赖包，不需要 Git 或自行创建虚拟环境。
-
-:::info[安装候选版本]
-目前 MCP 包以 wheel 提供，尚未在 package index 发布。按[包安装说明](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/package-installation.md)获取 wheel 及对应 SHA-256，以 `Get-FileHash` 比对；不相符便停止。暂时不要只用包名安装。
-:::
-
-在已核对 wheel 的文件夹运行：
+**安装 uv。** 在 PowerShell 执行以下命令。
 
 ```powershell
+winget install --id=astral-sh.uv -e
+```
+
+打开新的 PowerShell 窗口，执行 `uvx --version` 确认安装成功。[其他 uv 安装方式](https://docs.astral.sh/uv/getting-started/installation/#installation-methods)
+
+**核对 wheel。** 向发布负责人索取候选版 `.whl` 文件、SHA-256 和依赖包索引网址。将 wheel 保存在固定文件夹，在 PowerShell 转到该文件夹并执行以下命令。
+
+```powershell
+Get-FileHash .\mft_trader_api_mcp-0.1.0-py3-none-any.whl -Algorithm SHA256
+```
+
+确认哈希值与收到的 SHA-256 匹配后再继续。
+
+**运行设置。** 在同一文件夹，将命令内的索引占位值替换为收到的网址，然后运行：
+
+```powershell
+$env:MFT_TRADER_API_PACKAGE_INDEX = "<dependency index URL>"
 uvx --no-config --no-env-file --managed-python --python 3.12 `
-  --index https://mf-technologies.github.io/Python-package-repositories/simple/ `
+  --index $env:MFT_TRADER_API_PACKAGE_INDEX `
   --default-index https://pypi.org/simple `
   --from .\mft_trader_api_mcp-0.1.0-py3-none-any.whl trader-api-mcp-setup
 ```
 
-设置程序会创建账户文件（通常是 `%USERPROFILE%\.mft-trader-api\.env`）并暂停。填入 API Key Management 的资料、保存，再按 Enter；然后选择你的 AI 工具。程序会检查账户连接并输出**只读 MCP 设置**，不会修改 AI 工具的配置文件。
+按照设置程序显示的路径打开账户文件，填入步骤 1 的资料并保存。回到 PowerShell 按 Enter，选择 AI 客户端。程序会检查账户访问权限并输出对应的客户端配置。
 
-将 wheel 保留在固定文件夹，不要放在 uv 缓存内。完整保留输出的 `command`、`args` 及超时设置，AI 工具会按这些路径自动启动 MCP。
+<details>
+<summary>账户文件字段</summary>
 
-## 3. 配置客户端
+| 字段 | API Key Management 来源 |
+| --- | --- |
+| `TRADER_API_KEY` | 具有 Read 权限的 API key |
+| `TRADER_API_USERNAME` | `username` |
+| `TRADER_API_TRADE_KEY` | `trade_key` |
+| `TRADER_API_WEB_PROXY_URL` | WebProxy REST (`webproxy_endpoint`) |
+| `TRADER_API_FXSERVER_REST_URL` | FxServer REST |
+| `TRADER_API_FXSERVER_WS_URL` | FxServer WebSocket (`endpoint`) |
+| `TRADER_API_PRICE_AGENT_WS_URL` | Price Agent WebSocket (`price_agent_endpoint`) |
+| `TRADER_API_CHART_SERVER_URL` | ChartServer REST |
 
-选择刚才设置时所选的工具。只合并输出的 `mft-trader-api` 项目，保留其他 servers，再重新启动或加载工具。
+请复制收到的完整网址，包括原有路径。Python 示例可能没有列出 REST 网址，请查看终端的连接设置。如有必填值缺失，请联系账户支持。
 
-**只读设置。** 启用交易前，请查看[所选工具的流程验证状态](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/host-acceptance.md)。
+</details>
+
+<span id="configure-mcp-client" className="mcpSectionAnchor" />
+
+以下各客户端的示例显示配置应粘贴的位置。请在 PowerShell 复制 **Merge this server entry into…** 下方输出的完整配置，保留路径、参数及超时设置。如果已有 `mft-trader-api`，只替换同名条目。
 
 <Tabs className="mcpHostTabs" groupId="trader-mcp-host">
 <TabItem value="codex" label="Codex" attributes={{className: 'mcpHostCodex'}} default>
 
-设置时选 **`codex`**。
+将生成的 `[mcp_servers.mft-trader-api]` 区块添加到 `%USERPROFILE%\.codex\config.toml`，然后重启 Codex。
 
-1. 打开 `%USERPROFILE%\.codex\config.toml`。
-2. 加入输出的 `[mcp_servers.mft-trader-api]` 区块；已存在便只替换该区块，保留其他设置。
-3. 重新启动 Codex，检查 MCP tools；CLI 用户也可运行 `codex mcp list`。在新对话问下方的账户问题。
+<McpConfigExample host="codex" />
 
 </TabItem>
 <TabItem value="claude-code" label="Claude Code" attributes={{className: 'mcpHostClaudeCode'}}>
 
-设置时选 **`claude-code`**。
+将生成的条目添加到项目 `.mcp.json` 的 `mcpServers`，然后在该项目重新打开 Claude Code。
 
-1. 打开使用 Claude Code 的文件夹内的 `.mcp.json`。
-2. 新文件可粘贴完整 JSON；已有设置便只将 `mft-trader-api` 合并至现有 `mcpServers`，保留正确的 JSON 逗号。
-3. 在该文件夹重新启动 Claude Code，按提示允许加载 server，并以 `/mcp` 检查。
+<McpConfigExample host="claude-code" />
 
 </TabItem>
 <TabItem value="cursor" label="Cursor" attributes={{className: 'mcpHostCursor'}}>
 
-设置时选 **`cursor`**。
+将生成的条目添加到 `%USERPROFILE%\.cursor\mcp.json` 或工作区 `.cursor/mcp.json` 的 `mcpServers`，然后重新加载 Cursor。
 
-1. 打开用户设置 `%USERPROFILE%\.cursor\mcp.json`，或当前工作区的 `.cursor/mcp.json`，选其中一种范围。
-2. 在 `mcpServers` 内加入或替换输出的 `mft-trader-api` 项目。
-3. 重新加载 Cursor，如有需要在 MCP 设置启用 server；在 Agent 对话问第一个问题。
+<McpConfigExample host="cursor" />
 
 </TabItem>
 <TabItem value="claude-desktop" label="Claude Desktop" attributes={{className: 'mcpHostClaudeDesktop'}}>
 
-设置时选 **`claude-desktop`**。
+打开 **Settings → Developer → Edit Config**，将生成的条目添加到 `mcpServers`，然后退出并重新打开 Claude Desktop。
 
-1. 打开 **Settings → Developer → Edit Config**。
-2. 空白文件可粘贴完整 JSON；已有设置便只将 `mft-trader-api` 合并至现有 `mcpServers`。
-3. 保存后完全退出 Claude Desktop，再重新打开。
+<McpConfigExample host="claude-desktop" />
 
 </TabItem>
 <TabItem value="openclaw" label="OpenClaw" attributes={{className: 'mcpHostOpenClaw'}}>
 
-设置时选 **`openclaw`**。**仅限只读；实际工具内的流程尚未验证。**
+将生成的 `mcp.servers.mft-trader-api` 条目添加到正在使用的 `openclaw.json`，然后重新加载管理该配置的 Gateway。
 
-1. 使用支持原生 outbound MCP（`mcp.servers`）的版本。
-2. 将 `mcp.servers.mft-trader-api` 合并至使用中的 profile 的 `openclaw.json`，或使用已运行 Gateway 的 **Settings → MCP** 编辑器。
-3. 重新加载所属运行环境，再问账户问题。uvx、wheel 及账户文件路径必须存在于该机器，而非只存在于显示对话的设备。
-
-运行环境及工具权限检查请参阅 [OpenClaw 接入步骤](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/agent-hosts.md#openclaw)。不要为测试连接而停止共享 Gateway。
+<McpConfigExample host="openclaw" />
 
 </TabItem>
 <TabItem value="hermes" label="Hermes" attributes={{className: 'mcpHostHermes'}}>
 
-设置时选 **`hermes`**。**仅限只读；实际工具内的流程尚未验证。**
+将生成的 `mcp_servers.mft-trader-api` 条目添加到正在使用的 `config.yaml`，保留 `trust: untrusted`。重启 Hermes，或在支持的界面运行 `/reload-mcp`。
 
-1. 打开使用中的 Hermes Agent（Nous Research）profile 的 `config.yaml`，通常位于 `~/.hermes/config.yaml`。
-2. 将输出的 `mcp_servers.mft-trader-api` 合并至现有配置。保留 `trust: untrusted` 及其他 profile 设置。
-3. 启动 `hermes chat`，或在支持的对话界面运行 `/reload-mcp`。路径必须存在于运行 Hermes 的机器。
-
-详见 [Hermes 接入步骤](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/agent-hosts.md#hermes-agent-nous-research)。
+<McpConfigExample host="hermes" />
 
 </TabItem>
 </Tabs>
 
-其他**本地 stdio** client 可在设置时选 `stdio`，使用输出的 `command` 及 `args`。这不是供 ChatGPT 或纯网页 AI 工具使用的 remote connector URL。支持配置格式，不代表已验证该工具的交易批准界面。
+其他本地 stdio 客户端可选择 `stdio`，使用生成的 `command` 和 `args`。
 
-## 4. 问第一个问题
+<span id="mcp-host-status" className="mcpSectionAnchor" />
 
-<CodeBlock className="mcpPrompt" language="text">{'显示我的账户余额、持仓及挂单，不要下单。'}</CodeBlock>
+[客户端兼容性和验证记录](../mcp/authorization.mdx#mcp-host-status)
 
-成功时应通过 MCP tools 返回账户资料，而非一般回答或只有“已连接”状态。然后问：
+## 3. 确认连接
 
-<CodeBlock className="mcpPrompt" language="text">{'列出我的账户可用的确切 API contract codes。'}</CodeBlock>
+<CodeBlock className="mcpPrompt" language="text">{"显示我的账户余额、持仓及挂单，不要下单。"}</CodeBlock>
 
-从结果选择 code，再问（替换占位值）：
+在新对话中提出以上问题。客户端调用 mFT Trader API MCP 工具并返回账户数据，即表示连接成功。
 
-<CodeBlock className="mcpPrompt" language="text">{'显示 <YOUR_API_CODE> 的最新 bid／ask，并说明报价是否新鲜。不要下单。'}</CodeBlock>
+[查看 MCP 工具](../mcp/tools.mdx) · [使用 AI 交易](../mcp/trading.mdx)
 
-API code 可能与 terminal 显示名称不同。数据过时或不可用时必须如实说明。收市时没有新鲜报价，不能单凭这点判定账户连接成功或失败。
+<details id="mcp-setup-troubleshooting">
+<summary>设置故障排查</summary>
 
-## 下一步
+- 若设置失败，请检查 `uvx --version`、wheel 哈希值、依赖包索引及账户文件。
+- 若客户端无法启动 MCP，请检查生成的路径并重启客户端。移动 wheel 或账户文件后，请重新生成配置条目。
+- 候选版支持请使用随 wheel 提供的联系渠道。请将凭据和原始日志保留在本地。
 
-- **分析市场：** 要求计算确切合约的已完成 K 线 RSI(14)、SMA(20) 或 EMA(20)，并说明数据质量。另有本地 K 线查看器，但不是 terminal 图表控制或手机图表。
-- **准备 demo 交易：** 先验证所选工具的批准流程，再按 [Demo trading](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/demo-trading.md)另行启用；需要 Read + Trade 权限。OpenClaw／Hermes 维持只读。
-- **获取帮助：** 参阅[设置故障排查](https://github.com/mF-Technologies/trader-api-mcp/blob/main/SUPPORT.md#setup-troubleshooting)、[工具验证状态](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/host-acceptance.md)及[工具目录](https://github.com/mF-Technologies/trader-api-mcp/blob/main/docs/tool-catalog.md)。
-
-:::warning[启用交易前]
-每项操作都需要独立人工表单，显示已保存的账户、合约、数量及条款。一般 Allow 提示或对话回复不等于交易批准。结果为 `UNKNOWN` 时，保留 journal 并查询原 intent，不要再次提交。本指南不会启用无人监督或真实账户交易。
-:::
+</details>

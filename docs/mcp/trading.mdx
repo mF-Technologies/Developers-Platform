@@ -1,0 +1,134 @@
+---
+title: Trade with AI
+---
+
+Start with a demo account you have confirmed independently. Enable trading only after checking your client's tested approval path. Each operation requires a separate approval. [Authorization](./authorization.mdx)
+
+## Check the account first
+
+Ask for balance, open positions and working orders. Use `get_contract_settings` for the exact contract code and amount rules. Check a fresh quote before setting prices. The example references, prices and quantities below are illustrative.
+
+## Market order {/* #market-order-workflow */}
+
+Use `submit_order` with `order_type=MARKET`. The server determines the execution price. Amounts are in contract units. [`POST /addDeal`](../api/fxserver/add-a-deal.api.mdx)
+
+### Preview
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "order_type": "MARKET",
+    "contract": "USDJPY",
+    "side": "BUY",
+    "amount": 1000
+  }
+}
+```
+
+### Review and submit
+
+Use the `client_order_id` from the preview with `action=submit` on the same tool. Check the account, quantity, terms and expiry in the client's human approval form. Accept the form before expiry to send the saved request.
+
+```json
+{
+  "request": {
+    "action": "submit",
+    "client_order_id": 123456789
+  }
+}
+```
+
+### Check the result {/* #confirm-and-check-the-result */}
+
+Call `get_execution_status` with the original `client_order_id` if the result is `UNKNOWN`. Keep the original account configuration and local journal. A pending order's `EXECUTED` confirms submission. Check fills with `get_order_detail`.
+
+```json
+{
+  "client_order_id": 123456789
+}
+```
+
+## Pending order {/* #pending-order-workflow */}
+
+Use the same tool for `LIMIT` or `STOP` with an absolute entry price. `good_till=1` keeps the order until cancelled, subject to the account's trading rules. [`POST /addOrder`](../api/fxserver/add-a-new-order.api.mdx)
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "order_type": "LIMIT",
+    "contract": "USDJPY",
+    "side": "BUY",
+    "amount": 1000,
+    "price": 149.5,
+    "good_till": 1
+  }
+}
+```
+
+## Edit a working order {/* #edit-pending-order */}
+
+Use `edit_pending_order` with the working order reference and the fields to change. The preview shows the original order alongside the changes. [`POST /editOrder`](../api/fxserver/edit-an-existing-order.api.mdx)
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "order_ref": "42",
+    "price": 149.6
+  }
+}
+```
+
+## Cancel a working order {/* #cancel-pending-order */}
+
+[`POST /cancelOrder`](../api/fxserver/cancel-an-order.api.mdx) accepts the working order reference and comment. The API has no `clientOrderId` for cancellation.
+
+<details>
+<summary>Local cancellation on the current package</summary>
+
+Preview with `cancel_pending_order`. Use the returned `intent_id` to submit for human approval. An HTTP `200` confirms cancellation, including an empty response. For `UNKNOWN`, look up the same `intent_id` with `get_execution_status`. The adapter checks the original `orderNo` and a matching cancelled record confirms the order state.
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "order_ref": "42",
+    "comment": "Requested by account holder"
+  }
+}
+```
+
+</details>
+
+## Close a position {/* #close-position */}
+
+Use `close_position` with the position reference and amount in contract units. Use the full reported amount to close the position. The preview shows the expected remainder. [`POST /liquidate`](../api/fxserver/liquidate-a-position.api.mdx)
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "position_ref": "81",
+    "amount": 1000
+  }
+}
+```
+
+## Set position protection {/* #set-position-protection */}
+
+Use `set_position_protection` to set a full pair of absolute take-profit and stop-loss prices. To preserve one leg, include its current terms in the pair. Removing a leg is unsupported. [`POST /editDealOcoPair`](../api/fxserver/edit-oco-pair-for-a-deal.api.mdx)
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "position_ref": "81",
+    "take_profit_price": 151,
+    "stop_loss_price": 148.5
+  }
+}
+```
+
+[MCP Tools](./tools.mdx)

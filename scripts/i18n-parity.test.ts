@@ -9,6 +9,8 @@ import {parse} from 'yaml';
 import sidebars from '../sidebars';
 import config from '../docusaurus.config';
 import {apiServices} from '../api-services';
+import catalog from '../src/mcp-catalog.json';
+import {toolDescriptions, toolLocales} from '../src/components/mcpToolDescriptions';
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const docsRoot = resolve(repositoryRoot, 'docs');
@@ -58,6 +60,14 @@ function translationKeys(locale: (typeof locales)[number], file: string): string
 }
 
 describe('localized public documentation', () => {
+  test('every published MCP tool has a plain-language summary in all three locales', () => {
+    expect(Object.keys(toolDescriptions).sort()).toEqual(catalog.tools.map(tool => tool.name).sort());
+    for (const description of Object.values(toolDescriptions)) {
+      expect(Object.keys(description).sort()).toEqual([...toolLocales].sort());
+      expect(toolLocales.every(locale => description[locale].trim().length > 0)).toBe(true);
+    }
+  });
+
   test('navbar offers each API directly and keeps the owning service active on endpoints', () => {
     const items = (config.themeConfig as ThemeConfig).navbar!.items!;
     const reference = items.find(item => item.label === 'API reference');
@@ -151,7 +161,7 @@ describe('localized public documentation', () => {
     expect(homepage).toContain("'zh-Hans': {");
   });
 
-  test('MCP setup exposes the same host selectors in every language', () => {
+  test('MCP quick start exposes the same three steps and host selectors in every language', () => {
     const expected = ['codex', 'claude-code', 'cursor', 'claude-desktop', 'openclaw', 'hermes'];
     const pages = [
       resolve(docsRoot, 'getting-started/connect-your-ai.mdx'),
@@ -161,11 +171,38 @@ describe('localized public documentation', () => {
 
     for (const page of pages) {
       const contents = readFileSync(page, 'utf8');
-      expect(contents).toContain('mcpHostTabs');
+      const steps = [...contents.matchAll(/^## (\d)\. /gm)].map((match) => match[1]);
+      expect(steps).toEqual(['1', '2', '3']);
+      expect(contents).toContain('](#configure-mcp-client)');
+      expect(contents).toContain('id="configure-mcp-client"');
+      expect(contents).toContain('id="mcp-host-status"');
+      expect(contents).toContain('../mcp/authorization.mdx#mcp-host-status');
+      expect(contents).toContain('id="mcp-setup-troubleshooting"');
+      expect(contents).not.toContain('github.com/mF-Technologies/trader-api-mcp/blob/');
+      const authorization = readFileSync(resolve(dirname(page), '../mcp/authorization.mdx'), 'utf8');
+      expect(authorization).toContain('{/* #mcp-host-status */}');
+      expect(authorization).toContain('<McpHostStatus />');
+      const commands = [...contents.matchAll(/```powershell\n([\s\S]*?)\n```/g)]
+        .map((match) => match[1]);
+      expect(commands).toHaveLength(3);
+      expect(commands[0]).toBe('winget install --id=astral-sh.uv -e');
+      expect(commands[1]).toMatch(/^Get-FileHash .+ -Algorithm SHA256$/);
+      expect(commands[2]).toContain('uvx --no-config --no-env-file --managed-python --python 3.12');
+      expect(commands[2]).toContain('trader-api-mcp-setup');
+      expect(contents).not.toContain('docs/local-host-setup.md#install-and-configure');
+      expect(contents).toContain('../mcp/trading.mdx');
+      expect(contents.indexOf('<Tabs className="mcpHostTabs"')).toBeGreaterThan(
+        contents.indexOf('## 2.'),
+      );
+      expect(contents.indexOf('</Tabs>')).toBeLessThan(contents.indexOf('## 3.'));
+      expect(contents).not.toContain('McpHostStatus');
       expect(contents).not.toMatch(/^### /m);
       const selectors = [...contents.matchAll(/<TabItem value="([^"]+)"/g)]
         .map((match) => match[1]);
       expect(selectors).toEqual(expected);
+      for (const [, host, panel] of contents.matchAll(/<TabItem value="([^"]+)"[^>]*>([\s\S]*?)<\/TabItem>/g)) {
+        expect(panel).toContain(`<McpConfigExample host="${host}"`);
+      }
       const iconClasses = [...contents.matchAll(/attributes=\{\{className: '(mcpHost\w+)'\}\}/g)]
         .map((match) => match[1]);
       expect(iconClasses).toEqual([
@@ -173,7 +210,66 @@ describe('localized public documentation', () => {
         'mcpHostClaudeDesktop', 'mcpHostOpenClaw', 'mcpHostHermes',
       ]);
       expect([...contents.matchAll(/<CodeBlock className="mcpPrompt" language="text">/g)])
-        .toHaveLength(3);
+        .toHaveLength(1);
+    }
+  });
+
+  test('MCP Tools publishes the registered order preview and client order ID contracts', () => {
+    const mcp = sidebars.mainSidebar.find(item => typeof item !== 'string' && item.label === 'MCP');
+    expect(mcp).toBeDefined();
+    expect(mcp).toMatchObject({
+      link: {type: 'doc', id: 'mcp/overview'},
+      items: ['getting-started/connect-your-ai', 'mcp/tools', 'mcp/trading', 'mcp/authorization'],
+    });
+    const navItem = (config.themeConfig as ThemeConfig).navbar!.items!.find(
+      item => item.label === 'MCP',
+    );
+    expect(navItem?.to).toBe('/docs/mcp/overview');
+    expect(new RegExp(String(navItem?.activeBaseRegex)).test('/docs/mcp/tools')).toBe(true);
+    const submit = catalog.tools.find(tool => tool.name === 'submit_market_order');
+    const pending = catalog.tools.find(tool => tool.name === 'submit_pending_order');
+    const edit = catalog.tools.find(tool => tool.name === 'edit_pending_order');
+    const status = catalog.tools.find(tool => tool.name === 'get_execution_status');
+    expect(submit?.annotations.readOnlyHint).toBe(false);
+    expect(submit?.inputSchema.$defs?.SubmitMarketOrder?.required).toEqual(['action', 'client_order_id']);
+    expect(pending?.annotations.readOnlyHint).toBe(false);
+    expect(pending?.inputSchema.$defs?.SubmitPendingOrder?.required).toEqual(['action', 'client_order_id']);
+    expect(edit?.annotations.readOnlyHint).toBe(false);
+    expect(edit?.inputSchema.$defs?.PreviewEditPendingOrder?.required).toEqual(['action', 'order_ref']);
+    expect(edit?.inputSchema.$defs?.SubmitEditPendingOrder?.required).toEqual(['action', 'client_order_id']);
+    expect(status?.annotations.readOnlyHint).toBe(true);
+    expect(status?.inputSchema.properties).toHaveProperty('client_order_id');
+    for (const [name, schema, fields] of [
+      ['submit_order', 'PreviewSubmitOrder', ['action', 'contract', 'amount', 'side', 'order_type']],
+      ['close_position', 'PreviewClosePosition', ['action', 'position_ref', 'amount']],
+      ['set_position_protection', 'PreviewPositionProtection',
+        ['action', 'position_ref', 'take_profit_price', 'stop_loss_price']],
+      ['cancel_pending_order', 'SubmitCancelOrder', ['action', 'intent_id']],
+    ] as const) {
+      const tool = catalog.tools.find(item => item.name === name);
+      const definitions = tool?.inputSchema.$defs as
+        Record<string, {required?: readonly string[]}> | undefined;
+      expect(tool?.annotations.readOnlyHint).toBe(false);
+      expect(definitions?.[schema]?.required).toEqual([...fields]);
+    }
+    for (const root of ['docs', ...locales.map(
+      locale => `i18n/${locale}/docusaurus-plugin-content-docs/current`,
+    )]) {
+      const toolsPage = readFileSync(resolve(repositoryRoot, root, 'mcp/tools.mdx'), 'utf8');
+      const tradingPage = readFileSync(resolve(repositoryRoot, root, 'mcp/trading.mdx'), 'utf8');
+      expect(toolsPage).toContain('id="edit-pending-order"');
+      expect(toolsPage).toContain('./trading.mdx#edit-pending-order');
+      expect(tradingPage).toContain('{/* #edit-pending-order */}');
+      expect(tradingPage).toContain('../api/fxserver/edit-an-existing-order.api.mdx');
+      const requests = fencedCodeBlocks(tradingPage).map(
+        block => JSON.parse(block.slice('```json\n'.length, -3)),
+      );
+      expect(requests.slice(0, 3)).toEqual([
+        {request: {action: 'preview', order_type: 'MARKET', contract: 'USDJPY', side: 'BUY', amount: 1000}},
+        {request: {action: 'submit', client_order_id: 123456789}},
+        {client_order_id: 123456789},
+      ]);
+      expect(requests).toContainEqual({request: {action: 'preview', order_ref: '42', price: 149.6}});
     }
   });
 

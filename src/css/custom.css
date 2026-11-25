@@ -253,6 +253,15 @@ html[lang='zh-Hans'] .theme-doc-markdown h2 {
   line-height: var(--leading-code);
 }
 
+.mcpSectionAnchor {
+  display: block;
+  scroll-margin-top: calc(var(--ifm-navbar-height) + 1rem);
+}
+
+.theme-doc-markdown:has(> :is(#market-order-workflow, #configure-mcp-client)) > :is(p, ul, ol) {
+  max-inline-size: 76ch;
+}
+
 .doc-table-scroll {
   margin-bottom: var(--ifm-spacing-vertical);
   overflow-x: auto;
@@ -365,6 +374,16 @@ html[lang='zh-Hans'] .theme-doc-markdown h2 {
 
 .theme-doc-markdown .mcpPrompt.theme-code-block button {
   opacity: 1;
+}
+
+.mcpConfigExample.theme-code-block button {
+  display: none;
+}
+
+.mcpConfigExample pre code {
+  float: none;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .mcpHostTabs .tabs__item:hover,

@@ -1,0 +1,146 @@
+.catalog {
+  margin-block: 1.5rem 2rem;
+}
+
+.version {
+  color: var(--ifm-color-emphasis-700);
+  font-size: var(--type-meta);
+  margin-block: 0.65rem 0;
+}
+
+.search {
+  display: grid;
+  gap: 0.4rem;
+  max-width: 28rem;
+  font-weight: 600;
+}
+
+.search input {
+  min-width: 0;
+  min-height: 2.5rem;
+  padding-inline: 0.7rem;
+  border: 1px solid var(--ifm-color-emphasis-500);
+  border-radius: 4px;
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+  font: inherit;
+  font-weight: 400;
+}
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.categories button {
+  min-height: 2.5rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 4px;
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+  font: inherit;
+  font-size: var(--type-control);
+  cursor: pointer;
+}
+
+.categories button:hover,
+.categories button[aria-pressed='true'] {
+  background: var(--ifm-color-emphasis-100);
+  border-color: var(--ifm-color-emphasis-600);
+}
+
+.categories button[aria-pressed='true'] {
+  box-shadow: inset 0 -2px var(--ifm-color-primary);
+}
+
+.compatibility {
+  margin-top: 1rem;
+}
+
+.compatibility > summary {
+  padding-block: 0.5rem;
+  font-size: var(--type-control);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.catalog section {
+  margin-top: 1.75rem;
+}
+
+.catalog h2 {
+  margin-bottom: 0.65rem;
+}
+
+.tool {
+  border-block-end: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.tool:first-of-type {
+  border-block-start: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.tool > summary {
+  padding: 0.7rem 0.25rem;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.permission {
+  display: inline-block;
+  margin-inline-start: 0.8rem;
+  color: var(--ifm-color-emphasis-700);
+  font-size: var(--type-meta);
+}
+
+.description {
+  display: block;
+  margin: 0.2rem 0 0 1rem;
+  color: var(--ifm-color-emphasis-800);
+  font-size: var(--type-control);
+}
+
+.details {
+  padding: 0.5rem 1.25rem 0.85rem;
+}
+
+.details summary {
+  cursor: pointer;
+}
+
+.details pre {
+  margin-block: 0.5rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.catalog dd {
+  margin-inline-start: 0;
+  margin-block: 0.3rem 0.85rem;
+}
+
+.parameter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.65rem;
+  overflow-wrap: anywhere;
+  font-size: var(--type-control);
+}
+
+.parameters {
+  margin-bottom: 0.85rem;
+}
+
+.parameterTitle {
+  font-weight: 600;
+  margin-block: 0.65rem 0.3rem;
+}
+
+.parameterList {
+  padding: 0;
+  list-style: none;
+}

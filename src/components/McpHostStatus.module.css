@@ -1,0 +1,21 @@
+.table {
+  display: table;
+  width: 100%;
+}
+
+.table th,
+.table td {
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+
+.table tbody th {
+  font-weight: 600;
+}
+
+@media (max-width: 540px) {
+  .table th,
+  .table td {
+    padding: 0.45rem;
+  }
+}

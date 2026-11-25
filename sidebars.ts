@@ -33,8 +33,12 @@ const sidebars = {
     {
       type: 'category',
       label: 'MCP',
+      link: {type: 'doc', id: 'mcp/overview'},
       items: [
         'getting-started/connect-your-ai',
+        'mcp/tools',
+        'mcp/trading',
+        'mcp/authorization',
       ],
     },
     {

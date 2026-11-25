@@ -49,6 +49,12 @@ unset so changing the sidebar updates page navigation in all three locales.
 Each endpoint appears once under its first tag; other spec tags remain intact.
 External links are sidebar destinations, not pages in the reading sequence.
 
+The MCP Tools page reads the checked-in `src/mcp-catalog.json` snapshot. From
+the Trader API MCP checkout, run `python scripts/export_mcp_catalog.py --output <path-to-Developers-Platform>/src/mcp-catalog.json`
+using the release candidate's installed environment. Review and update the
+snapshot alongside the corresponding package documentation. The export lists
+registered schemas without connecting to a trading account.
+
 ## Validation
 
 ```bash

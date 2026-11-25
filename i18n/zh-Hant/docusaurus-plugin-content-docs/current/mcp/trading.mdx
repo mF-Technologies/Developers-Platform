@@ -1,0 +1,134 @@
+---
+title: 使用 AI 交易
+---
+
+先獨立確認正在使用模擬帳戶。確認用戶端已驗證的審核流程後再啟用交易。每筆操作都需要獨立批准。 [授權](./authorization.mdx)
+
+## 先查看帳戶
+
+先查詢結餘、持倉及掛單。用 `get_contract_settings` 核對正確合約代碼和數量限制。設定價格前先查看最新報價。以下編號、價位和數量只供示範。
+
+## 市價單 {/* #market-order-workflow */}
+
+用 `submit_order` 並設定 `order_type=MARKET`。成交價由伺服器決定。數量以合約單位表示。 [`POST /addDeal`](../api/fxserver/add-a-deal.api.mdx)
+
+### 預覽
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "order_type": "MARKET",
+    "contract": "USDJPY",
+    "side": "BUY",
+    "amount": 1000
+  }
+}
+```
+
+### 審核並提交
+
+將預覽回傳的 `client_order_id` 交回同一工具，並指定 `action=submit`。在用戶端的真人審核表單內核對帳戶、數量、條款及到期時間。到期前接受才會提交已保存的請求。
+
+```json
+{
+  "request": {
+    "action": "submit",
+    "client_order_id": 123456789
+  }
+}
+```
+
+### 查詢結果 {/* #confirm-and-check-the-result */}
+
+結果為 `UNKNOWN` 時，以原本的 `client_order_id` 呼叫 `get_execution_status`，並保留原有帳戶設定及本機紀錄。掛單的 `EXECUTED` 代表提交已確認，可用 `get_order_detail` 查詢成交。
+
+```json
+{
+  "client_order_id": 123456789
+}
+```
+
+## 掛單 {/* #pending-order-workflow */}
+
+用同一工具建立 `LIMIT` 或 `STOP` 掛單，並提供絕對入場價。`good_till=1` 表示有效至取消，仍受帳戶交易規則限制。 [`POST /addOrder`](../api/fxserver/add-a-new-order.api.mdx)
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "order_type": "LIMIT",
+    "contract": "USDJPY",
+    "side": "BUY",
+    "amount": 1000,
+    "price": 149.5,
+    "good_till": 1
+  }
+}
+```
+
+## 修改現有掛單 {/* #edit-pending-order */}
+
+用 `edit_pending_order` 提供掛單編號及要修改的欄位。預覽會同時顯示原有訂單及修改內容。 [`POST /editOrder`](../api/fxserver/edit-an-existing-order.api.mdx)
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "order_ref": "42",
+    "price": 149.6
+  }
+}
+```
+
+## 取消掛單 {/* #cancel-pending-order */}
+
+[`POST /cancelOrder`](../api/fxserver/cancel-an-order.api.mdx) 接受掛單編號及備註。撤單 API 目前沒有 `clientOrderId` 欄位。
+
+<details>
+<summary>目前套件的本機撤單方式</summary>
+
+用 `cancel_pending_order` 預覽，再用回傳的 `intent_id` 提交真人確認。HTTP `200` 即確認撤單成功，回應內容為空也適用。若結果為 `UNKNOWN`，用同一個 `intent_id` 呼叫 `get_execution_status`。MCP 會查詢原本的 `orderNo`，以相符的撤單紀錄確認狀態。
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "order_ref": "42",
+    "comment": "Requested by account holder"
+  }
+}
+```
+
+</details>
+
+## 平倉 {/* #close-position */}
+
+用 `close_position` 提供持倉編號及要平掉的合約單位數量。輸入目前完整數量以全數平倉。預覽會顯示預計餘量。 [`POST /liquidate`](../api/fxserver/liquidate-a-position.api.mdx)
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "position_ref": "81",
+    "amount": 1000
+  }
+}
+```
+
+## 設定持倉保護 {/* #set-position-protection */}
+
+用 `set_position_protection` 設定一組完整的絕對止盈及止損價格。保留一邊時須在完整配對中提供現有條款。目前不支援移除單邊。 [`POST /editDealOcoPair`](../api/fxserver/edit-oco-pair-for-a-deal.api.mdx)
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "position_ref": "81",
+    "take_profit_price": 151,
+    "stop_loss_price": 148.5
+  }
+}
+```
+
+[MCP 工具](./tools.mdx)

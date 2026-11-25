@@ -1,0 +1,19 @@
+---
+title: Authorization
+---
+
+import McpHostStatus from '@site/src/components/McpHostStatus';
+
+Create an API key with **Read** permission in Trading Terminal under **API Key Management**. Keep the issued settings in the local account file used by your client. [Set up your client](../getting-started/connect-your-ai.mdx).
+
+## Trading access
+
+Enable trading only for the account you intend to use. It requires Read and Trade permissions, local opt-in and a supported human approval form. The local account fingerprint binds the preview to that credential configuration. Verify the account type independently. [Host status](#mcp-host-status) · [Trade with AI](./trading.mdx)
+
+## Remove access
+
+Remove or disable the MCP server entry to disconnect the client. Revoke the API key in API Key Management to withdraw access at the account level. Keep the journal for any unresolved execution.
+
+## Client verification {/* #mcp-host-status */}
+
+<McpHostStatus />

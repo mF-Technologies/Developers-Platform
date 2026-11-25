@@ -1,0 +1,19 @@
+---
+title: 授权
+---
+
+import McpHostStatus from '@site/src/components/McpHostStatus';
+
+在交易终端的 **API Key Management** 创建具备 **Read** 权限的 API key。将获得的设置存入客户端使用的本地账户文件。[设置客户端](../getting-started/connect-your-ai.mdx)
+
+## 交易权限
+
+只为预期使用的账户启用交易。交易须具备 Read 及 Trade 权限、明确启用本地交易，以及使用支持人工表单的客户端。本地账户指纹将预览绑定至该凭证设置。请独立核对账户类型。[客户端状态](#mcp-host-status) · [使用 AI 交易](./trading.mdx)
+
+## 移除访问
+
+移除或停用 MCP 设置可断开客户端连接。可在 API Key Management 撤销 API key，以终止账户层级访问。保留结果未明的执行日志。
+
+## 客户端验证 {/* #mcp-host-status */}
+
+<McpHostStatus />

@@ -1,0 +1,134 @@
+---
+title: 使用 AI 交易
+---
+
+先独立确认正在使用模拟账户。确认客户端已验证的审核流程后再启用交易。每笔操作都需要独立批准。 [授权](./authorization.mdx)
+
+## 先查看账户
+
+先查询余额、持仓及挂单。用 `get_contract_settings` 核对正确合约代码和数量限制。设置价格前先查看最新报价。以下编号、价位和数量仅供示例。
+
+## 市价单 {/* #market-order-workflow */}
+
+用 `submit_order` 并设置 `order_type=MARKET`。成交价由服务器决定。数量以合约单位表示。 [`POST /addDeal`](../api/fxserver/add-a-deal.api.mdx)
+
+### 预览
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "order_type": "MARKET",
+    "contract": "USDJPY",
+    "side": "BUY",
+    "amount": 1000
+  }
+}
+```
+
+### 审核并提交
+
+将预览返回的 `client_order_id` 交回同一工具，并指定 `action=submit`。在客户端的人工审核表单中核对账户、数量、条款及到期时间。到期前接受才会提交已保存的请求。
+
+```json
+{
+  "request": {
+    "action": "submit",
+    "client_order_id": 123456789
+  }
+}
+```
+
+### 查询结果 {/* #confirm-and-check-the-result */}
+
+结果为 `UNKNOWN` 时，用原来的 `client_order_id` 调用 `get_execution_status`，并保留原有账户设置及本地日志。挂单的 `EXECUTED` 表示提交已确认，可用 `get_order_detail` 查询成交。
+
+```json
+{
+  "client_order_id": 123456789
+}
+```
+
+## 挂单 {/* #pending-order-workflow */}
+
+用同一工具创建 `LIMIT` 或 `STOP` 挂单，并提供绝对入场价。`good_till=1` 表示有效至取消，仍受账户交易规则限制。 [`POST /addOrder`](../api/fxserver/add-a-new-order.api.mdx)
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "order_type": "LIMIT",
+    "contract": "USDJPY",
+    "side": "BUY",
+    "amount": 1000,
+    "price": 149.5,
+    "good_till": 1
+  }
+}
+```
+
+## 修改现有挂单 {/* #edit-pending-order */}
+
+用 `edit_pending_order` 提供挂单编号及要修改的字段。预览会同时显示原订单及修改内容。 [`POST /editOrder`](../api/fxserver/edit-an-existing-order.api.mdx)
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "order_ref": "42",
+    "price": 149.6
+  }
+}
+```
+
+## 取消挂单 {/* #cancel-pending-order */}
+
+[`POST /cancelOrder`](../api/fxserver/cancel-an-order.api.mdx) 接受挂单编号及备注。撤单 API 目前没有 `clientOrderId` 字段。
+
+<details>
+<summary>当前软件包的本地撤单方式</summary>
+
+用 `cancel_pending_order` 预览，再用返回的 `intent_id` 提交人工确认。HTTP `200` 即确认撤单成功，响应内容为空也适用。若结果为 `UNKNOWN`，用同一个 `intent_id` 调用 `get_execution_status`。MCP 会查询原 `orderNo`，以匹配的撤单记录确认状态。
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "order_ref": "42",
+    "comment": "Requested by account holder"
+  }
+}
+```
+
+</details>
+
+## 平仓 {/* #close-position */}
+
+用 `close_position` 提供持仓编号及要平掉的合约单位数量。输入当前完整数量以全数平仓。预览会显示预计剩余数量。 [`POST /liquidate`](../api/fxserver/liquidate-a-position.api.mdx)
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "position_ref": "81",
+    "amount": 1000
+  }
+}
+```
+
+## 设置持仓保护 {/* #set-position-protection */}
+
+用 `set_position_protection` 设置一组完整的绝对止盈及止损价格。保留一边时须在完整配对中提供当前条款。目前不支持移除单边。 [`POST /editDealOcoPair`](../api/fxserver/edit-oco-pair-for-a-deal.api.mdx)
+
+```json
+{
+  "request": {
+    "action": "preview",
+    "position_ref": "81",
+    "take_profit_price": 151,
+    "stop_loss_price": 148.5
+  }
+}
+```
+
+[MCP 工具](./tools.mdx)

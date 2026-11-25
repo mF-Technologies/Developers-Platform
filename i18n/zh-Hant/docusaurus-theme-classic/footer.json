@@ -27,6 +27,14 @@
     "message": "連接 AI 工具",
     "description": "The label of footer link linking to the MCP quick start"
   },
+  "link.item.label.MCP Tools": {
+    "message": "MCP 工具",
+    "description": "The label of the MCP tool catalog footer link"
+  },
+  "link.item.label.Trade with AI": {
+    "message": "使用 AI 交易",
+    "description": "The label of the MCP trading guide footer link"
+  },
   "link.item.label.Make your first trade": {
     "message": "完成第一筆交易",
     "description": "The label of footer link with label=Make your first trade linking to /docs/getting-started/first-trade"
